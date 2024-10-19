@@ -1,0 +1,4 @@
+django==5.0.3
+djangorestframework==3.15.0
+pytest==7.4.2
+flake8==6.1.0
