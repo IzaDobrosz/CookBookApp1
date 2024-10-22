@@ -17,6 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from recipes.models import Recipe
+from recipes.views import CategoryListView, CategoryDetailView, TagListView, TagDetailView, RecipeListView, \
+    RecipeDetailView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('category/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
+    path('tags/', TagListView.as_view(), name='tag-list'),
+    path('tag/<int:pk>/', TagDetailView.as_view(), name='tag-detail'),
+    path('recipes/', RecipeListView.as_view(), name='recipe-list'),
+    path('recipe/<int:pk>/', RecipeDetailView.as_view(), name='recipe-detail'),
 ]
