@@ -61,20 +61,8 @@ class Category(models.Model):
         unique_together = ('category_type', 'sub_category')
         verbose_name_plural = 'Categories'
 
-    def clean(self):
-        # Ensure the sub_category is valid for the given category_type
-        valid_choices = self.SUB_CATEGORY_CHOICES.get(self.category_type, [])
-        if self.sub_category not in dict(valid_choices):
-            raise ValidationError(f"{self.sub_category} is not a valid subcategory for {self.category_type}")
-
-    def save(self, *args, **kwargs):
-        # Run the clean method to validate the model before saving
-        self.clean()
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.get_category_type_display()}: {self.get_sub_category_display()}"
-
 
 
 class Tag(models.Model):
@@ -118,19 +106,9 @@ class Tag(models.Model):
     class Meta:
         unique_together = ('tag_type', 'tag_label')
 
-    def clean(self):
-        # Validate that the value is a valid choice for the tag_type
-        valid_choices = self.TAG_CHOICES.get(self.tag_type, [])
-        if self.tag_label not in dict(valid_choices):
-            raise ValidationError(f"{self.tag_label} is not a valid choice for {self.tag_type}")
-
-    def save(self, *args, **kwargs):
-        # Run the clean method to validate the model before saving
-        self.clean()
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.get_tag_type_display()}: {self.tag_label}"
+
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255, verbose_name="Name of recipe")
@@ -156,7 +134,7 @@ class Recipe(models.Model):
         return self.name
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     comment = models.TextField(verbose_name="Comment")
     created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created on")
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
