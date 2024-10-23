@@ -1,17 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Category, Tag, Recipe
-from .serializers import CategorySerializer, TagSerializer, RecipeSerializer
-
-
-class CategoryListView(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
+from .models import Tag, Recipe
+from .serializers import TagSerializer, RecipeSerializer
 
 class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
