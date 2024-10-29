@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
-    tag_color = models.CharField(max_length=10, default="#FFFFFF")
+    tag_color = models.CharField(max_length=10, default="#000000")
+
+    class Meta:
+        ordering = ['tag_name']
 
     def __str__(self):
         return self.tag_name

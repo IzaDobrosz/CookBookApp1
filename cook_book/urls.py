@@ -20,6 +20,7 @@ from django.urls import path
 from recipes.models import Recipe
 from recipes.views import TagListView, TagDetailView, RecipeListView, \
     RecipeDetailView
+from recipes import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,7 @@ urlpatterns = [
     path('tag/<int:pk>/', TagDetailView.as_view(), name='tag-detail'),
     path('recipes/', RecipeListView.as_view(), name='recipe-list'),
     path('recipe/<int:pk>/', RecipeDetailView.as_view(), name='recipe-detail'),
+    path('', views.api_root),
+    path('users/', views.UserList.as_view(), name='user-list'),
+path('users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
 ]
