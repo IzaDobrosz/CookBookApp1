@@ -18,7 +18,11 @@ from django.utils.translation import gettext_lazy as _
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'testserver',
+]
 
 
 # Application definition
@@ -32,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'recipes',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -43,6 +49,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Enabling access to external frontend
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = 'cook_book.urls'
@@ -95,6 +106,11 @@ LANGUAGE_CODE = 'en-us'
 LANGUAGES = [
     ('en', _('English')),
     ('sv', _('Swedish')),
+]
+
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Directory with translations
 ]
 
 TIME_ZONE = 'UTC'
