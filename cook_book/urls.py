@@ -19,7 +19,7 @@ from django.urls import path
 
 from recipes.models import Recipe
 from recipes.views import TagListView, TagDetailView, RecipeListView, \
-    RecipeDetailView
+    RecipeDetailView, RecipeStepsView
 from recipes import views
 
 urlpatterns = [
@@ -28,7 +28,10 @@ urlpatterns = [
     path('tag/<int:pk>/', TagDetailView.as_view(), name='tag-detail'),
     path('recipes/', RecipeListView.as_view(), name='recipe-list'),
     path('recipe/<int:pk>/', RecipeDetailView.as_view(), name='recipe-detail'),
+    path('recipe/<int:recipe_id>/steps/<int:step>/', RecipeStepsView.as_view(), name='recipe-steps'),
+    path('recipe/<int:recipe_id>/steps/', RecipeStepsView.as_view(), name='recipe-steps'),
     path('', views.api_root),
     path('users/', views.UserList.as_view(), name='user-list'),
     path('users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
+
 ]

@@ -1,6 +1,9 @@
+from dataclasses import field
+
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.core.exceptions import ValidationError
+import json
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
@@ -80,6 +83,50 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# Non-standard validator for JSONField that can be used directly in the model field
+def validate_step_data(value):
+    # Check if value is a list of steps
+    if not isinstance(value, list):
+        raise ValidationError("Steps must be provided as a list.")
+
+    # Iterate over each step and validate fields
+    for step in value:
+        # Each step must be a dictionary
+        if not isinstance(step, dict):
+            raise ValidationError("Each step must be a dictionary.")
+
+        # Validate 'step_number' (required, integer)
+        if "step_number" not in step or not isinstance(step["step_number"], int):
+            raise ValidationError("Each step must contain an integer 'step_number'.")
+
+        # Validate 'instruction' (required, string)
+        if "instruction" not in step or not isinstance(step["instruction"], str):
+            raise ValidationError("Each step must contain a text 'instruction'.")
+
+        # Optional 'temperature' field (integer or None)
+        if "temperature" in step and not (step["temperature"] is None or isinstance(step["temperature"], int)):
+            raise ValidationError("Optional 'temperature' must be an integer or null.")
+
+        # Optional 'time' field (integer or None)
+        if "time" in step and not (step["time"] is None or isinstance(step["time"], int)):
+            raise ValidationError("Optional 'time' must be an integer or null.")
+
+class RecipeStep(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
+    step_details = models.JSONField(validators=[validate_step_data], verbose_name="Step details")
+
+    class Meta:
+        ordering = ['step_details__step_number']
+
+    # Override save to apply the same validation again before saving
+    def save(self, *args, **kwargs):
+        validate_step_data(self.step_details)  # Validate JSON field content
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.recipe.name} - Step: {self.step_details}'
 
 
 class Comment(models.Model):

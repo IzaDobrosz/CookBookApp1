@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Tag, Recipe, Comment
+from .models import Tag, Recipe, Comment, RecipeStep
 
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,6 +15,12 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recipe
         fields = ['url', 'id', 'name', 'description', 'prep_time', 'total_time', 'servings', 'ingredients', 'tools', 'preparation_steps', 'type_of_dish', 'preparation_method','ingredient_type','preparation_time','difficulty_level', 'tags']
+
+
+class RecipeStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeStep
+        fields = ['recipe', 'step_details']
 
 
 class CommentSerializer(serializers.ModelSerializer):
