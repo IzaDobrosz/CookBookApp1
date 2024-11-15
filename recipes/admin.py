@@ -38,7 +38,7 @@ class CommentAdmin(admin.ModelAdmin):
 class RecipeStepInline(admin.StackedInline):
     model = RecipeStep
     form = RecipeStepForm
-    extra = 1
+    extra = 1    # Number of empty forms shown by default
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):

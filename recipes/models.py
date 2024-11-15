@@ -115,18 +115,17 @@ def validate_step_data(value):
 
 class RecipeStep(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
-    step_details = models.JSONField(validators=[validate_step_data], verbose_name="Step details")
+    step_number = models.PositiveIntegerField(verbose_name="Step number", default=1)
+    instruction = models.TextField(verbose_name="Instruction", default="No instruction provided")
+    temperature = models.IntegerField(null=True, blank=True, verbose_name="Temperature")
+    time = models.DurationField(null=True, blank=True, verbose_name="Time")
 
     class Meta:
-        ordering = ['step_details__step_number']
-
-    # Override save to apply the same validation again before saving
-    def save(self, *args, **kwargs):
-        validate_step_data(self.step_details)  # Validate JSON field content
-        super().save(*args, **kwargs)
+        ordering = ['step_number']
+        unique_together = ('recipe', 'step_number')    # Unique step_number within one recipe
 
     def __str__(self):
-        return f'{self.recipe.name} - Step: {self.step_details}'
+        return f'{self.step_number}: {self.instruction}'
 
 
 class Comment(models.Model):
