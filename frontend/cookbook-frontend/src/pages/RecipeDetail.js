@@ -4,6 +4,7 @@ import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom'; // Access to the URL params
 import { ClockIcon, UserGroupIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import './RecipeDetail.css';
+import recipeStep from "./RecipeStep";
 
 const RecipeDetail = () => {
   const params = useParams(); // Access to ID from URL
@@ -35,7 +36,7 @@ const RecipeDetail = () => {
   }
     // Function to serve "Start cooking button"
     const handleStartCooking = () => {
-      navigate('/recipe/${params.id}/cook/1');
+      navigate('/recipe/${params.id}/steps/1');
     };
 
 return (
@@ -92,8 +93,8 @@ return (
         <div className="instructions-section">
             <h2 className="section-title">Instructions</h2>
             <ol className="list-decimal">
-                {recipe.preparation_steps.split('.').map((step, index) => (
-                    <li key={index}>{step.trim()}</li>
+                {recipeStep.step_details.map((step, index) => (
+                    <li key={index}>{step.instruction}</li>
                 ))}
             </ol>
             <button className="start-cooking-btn" onClick={handleStartCooking}>
