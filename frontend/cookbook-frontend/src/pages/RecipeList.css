@@ -1,0 +1,77 @@
+/* RecipeList.css */
+
+/* Główny kontener listy przepisów */
+.recipe-list-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Nagłówek strony */
+.recipe-list-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937; /* Tailwind's gray-900 */
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Lista przepisów */
+.recipe-list {
+  list-style-type: none; /* Usunięcie kropek */
+  padding: 0;
+  margin: 0;
+}
+
+/* Pojedynczy element listy */
+.recipe-list-item {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb; /* Delikatna linia dolna */
+  transition: background-color 0.3s;
+}
+
+/* Ostatni element bez linii dolnej */
+.recipe-list-item:last-child {
+  border-bottom: none;
+}
+
+/* Efekt hover na liście */
+.recipe-list-item:hover {
+  background-color: #f3f4f6; /* Jasnoszare tło */
+  cursor: pointer;
+}
+
+/* Styl linków w liście */
+.recipe-list-item a {
+  text-decoration: none; /* Usunięcie podkreślenia */
+  font-size: 1.125rem; /* Lekko powiększona czcionka */
+  color: #4A90E2; /* Niebieski odcień */
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+/* Efekt hover na linkach */
+.recipe-list-item a:hover {
+  color: #357ABD; /* Ciemniejszy niebieski */
+}
+
+/* Komunikat o błędzie */
+.error-message {
+  color: #EF4444; /* Czerwony kolor */
+  font-weight: bold;
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* Tło dla strony */
+body {
+  background-image: url('../../public/images/kitchen_pattern4.jpg'); /* Ścieżka do tekstury tła */
+  background-repeat: repeat; /* Powtarzanie tła */
+  background-attachment: fixed; /* Stałe tło */
+  background-size: cover; /* Dopasowanie do ekranu */
+  background-position: center;
+  color: #374151; /* Odcień szarości dla tekstu */
+}

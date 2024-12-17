@@ -1,0 +1,16 @@
+.stats-section {
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 10px;
+}
+
+.stats-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.stats-section p {
+  font-size: 1.2rem;
+}
