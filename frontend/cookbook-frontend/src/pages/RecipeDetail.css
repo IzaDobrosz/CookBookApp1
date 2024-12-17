@@ -442,3 +442,80 @@ body {
 .start-cooking-btn:hover {
     background-color: #357ABD; /* Ciemniejszy niebieski przy najechaniu */
 }
+
+
+.comments-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.comments-list {
+  margin-top: 1rem;
+}
+
+.comment-item {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.add-comment {
+  margin-top: 1rem;
+}
+
+.add-comment textarea {
+  width: 100%;
+  height: 100px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.add-comment button {
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-comment button:hover {
+  background-color: #45a049;
+}
+
+.comments-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-comment {
+  margin-top: 10px;
+}
+
+.add-comment-textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.send-comment-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.send-comment-btn:hover {
+  background-color: #0056b3;
+}

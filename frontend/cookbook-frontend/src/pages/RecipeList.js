@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';  //Enabling redirection to details
+import './RecipeList.css';
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);  // State to store recipes list
@@ -30,12 +31,12 @@ const RecipeList = () => {
 
 
   return (
-    <div>
-      <h1>Recipes</h1>
-      {error && <p>{error}</p>}
-      <ul>
+    <div className="recipe-list-container">
+      <h1 className="recipe-list-title">Recipes</h1>
+      {error && <p className="error-message">{error}</p>}
+      <ul className="recipe-list">
         {recipes.map(recipe => (
-          <li key={recipe.id}>
+          <li key={recipe.id} className="recipe-list-item">
               <Link to={`/recipe/${recipe.id}`}>{recipe.name}</Link>
           </li>
         ))}
