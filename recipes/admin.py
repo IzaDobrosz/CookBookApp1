@@ -1,5 +1,8 @@
 from django.contrib import admin
-
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+# from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model    # to return non standard user model
+from rest_framework.authtoken.models import Token
 from .forms import RecipeStepForm
 from .models import Tag, Recipe, Comment, RecipeStep
 
@@ -44,3 +47,27 @@ class RecipeStepInline(admin.StackedInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeStepInline]
     # list_display = ['name', 'ingredients', 'prep_time', 'total_time']
+
+# Get model User
+User = get_user_model()
+
+# Register User
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
+    list_display = ['username', 'email', 'first_name', 'last_name', 'date_joined', 'last_login', 'is_active']
+    search_fields = ['username', 'email']
+    list_filter = ['date_joined', 'last_login', 'is_active']
+
+
+# Due to token reaching to default user (conflict) => unregister TokenAdmin
+try:
+    admin.site.unregister(Token)
+except admin.sites.NotRegistered:  # If Token is not registered yet, ignore exception
+    pass
+
+
+# Register TokenAdmin manually with customized config
+@admin.register(Token)
+class CustomTokenAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['user']
+    list_display = ['key', 'user', 'created']
