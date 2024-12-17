@@ -1,9 +1,10 @@
 from dataclasses import field
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 import json
+from django.conf import settings
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
@@ -84,41 +85,41 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-
-# Non-standard validator for JSONField that can be used directly in the model field
-def validate_step_data(value):
-    # Check if value is a list of steps
-    if not isinstance(value, list):
-        raise ValidationError("Steps must be provided as a list.")
-
-    # Iterate over each step and validate fields
-    for step in value:
-        # Each step must be a dictionary
-        if not isinstance(step, dict):
-            raise ValidationError("Each step must be a dictionary.")
-
-        # Validate 'step_number' (required, integer)
-        if "step_number" not in step or not isinstance(step["step_number"], int):
-            raise ValidationError("Each step must contain an integer 'step_number'.")
-
-        # Validate 'instruction' (required, string)
-        if "instruction" not in step or not isinstance(step["instruction"], str):
-            raise ValidationError("Each step must contain a text 'instruction'.")
-
-        # Optional 'temperature' field (integer or None)
-        if "temperature" in step and not (step["temperature"] is None or isinstance(step["temperature"], int)):
-            raise ValidationError("Optional 'temperature' must be an integer or null.")
-
-        # Optional 'time' field (integer or None)
-        if "time" in step and not (step["time"] is None or isinstance(step["time"], int)):
-            raise ValidationError("Optional 'time' must be an integer or null.")
+#
+# # Non-standard validator for JSONField that can be used directly in the model field
+# def validate_step_data(value):
+#     # Check if value is a list of steps
+#     if not isinstance(value, list):
+#         raise ValidationError("Steps must be provided as a list.")
+#
+#     # Iterate over each step and validate fields
+#     for step in value:
+#         # Each step must be a dictionary
+#         if not isinstance(step, dict):
+#             raise ValidationError("Each step must be a dictionary.")
+#
+#         # Validate 'step_number' (required, integer)
+#         if "step_number" not in step or not isinstance(step["step_number"], int):
+#             raise ValidationError("Each step must contain an integer 'step_number'.")
+#
+#         # Validate 'instruction' (required, string)
+#         if "instruction" not in step or not isinstance(step["instruction"], str):
+#             raise ValidationError("Each step must contain a text 'instruction'.")
+#
+#         # Optional 'temperature' field (integer or None)
+#         if "temperature" in step and not (step["temperature"] is None or isinstance(step["temperature"], int)):
+#             raise ValidationError("Optional 'temperature' must be an integer or null.")
+#
+#         # Optional 'time' field (integer or None)
+#         if "time" in step and not (step["time"] is None or isinstance(step["time"], int)):
+#             raise ValidationError("Optional 'time' must be an integer or null.")
 
 class RecipeStep(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
     step_number = models.PositiveIntegerField(verbose_name="Step number", default=1)
     instruction = models.TextField(verbose_name="Instruction", default="No instruction provided")
     temperature = models.IntegerField(null=True, blank=True, verbose_name="Temperature")
-    time = models.DurationField(null=True, blank=True, verbose_name="Time")
+    time = models.DurationField(null=True, blank=True, verbose_name="Time")    # time as timedelta
 
     class Meta:
         ordering = ['step_number']
@@ -132,4 +133,8 @@ class Comment(models.Model):
     comment = models.TextField(verbose_name="Comment")
     created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created on")
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+# Extension of User model to serve "favorites"
+class User(AbstractUser):
+    favorite_recipes = models.ManyToManyField('Recipe', related_name='favorited_by', blank=True)
