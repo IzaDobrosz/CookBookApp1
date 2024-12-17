@@ -1,0 +1,15 @@
+.comments-page {
+  margin: 20px;
+}
+
+.comments-list {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.comment-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
