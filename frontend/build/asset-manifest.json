@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b69b355c.css",
+    "main.js": "/static/js/main.cc77ba26.js",
+    "static/js/453.f08be961.chunk.js": "/static/js/453.f08be961.chunk.js",
+    "static/media/kitchen_pattern4.jpg": "/static/media/kitchen_pattern4.b937222816903757be13.jpg",
+    "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/index.html",
+    "static/media/clockIcon.svg": "/static/media/clockIcon.38585fec598ef79bfbd0c5c4b099074a.svg",
+    "static/media/thermometerIcon.svg": "/static/media/thermometerIcon.3f4fcca9a253990f6a685179eb50bec4.svg",
+    "main.b69b355c.css.map": "/static/css/main.b69b355c.css.map",
+    "main.cc77ba26.js.map": "/static/js/main.cc77ba26.js.map",
+    "453.f08be961.chunk.js.map": "/static/js/453.f08be961.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b69b355c.css",
+    "static/js/main.cc77ba26.js"
+  ]
+}

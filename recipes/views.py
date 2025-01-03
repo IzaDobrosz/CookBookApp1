@@ -6,15 +6,17 @@ from textwrap import wrap
 
 from django.contrib.auth import authenticate
 from django.core.serializers import serialize
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.defaulttags import comment
 from rest_framework import generics, permissions
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.generics import ListAPIView, get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -27,8 +29,9 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Tag, Recipe, User, RecipeStep, Comment
 from .serializers import TagSerializer, RecipeSerializer, UserSerializer, RecipeStepSerializer, CommentSerializer
+from .permissions import IsOwnerOrReadOnly
 from datetime import timedelta
-
+from django.utils.timezone import now
 import logging
 
 class TagListView(generics.ListCreateAPIView):
@@ -41,6 +44,7 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class RecipeListView(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
@@ -95,12 +99,13 @@ class UserDetail(generics.RetrieveAPIView):
 
 class CommentListCreateView(generics.ListCreateAPIView):
     # queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]    # Allow unauthenticated users to view, authenticated to post
+
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         recipe_id = self.kwargs['recipe_id']      # Take ID of recipe from URL
-        return Comment.objects.filter(recipe_id=recipe_id)    #Filter comments for certain recipe
+        return Comment.objects.filter(recipe_id=recipe_id).order_by('-created_on')    #Filter comments for certain recipe
 
 
     def list(self, request, *args, **kwargs):
@@ -108,7 +113,8 @@ class CommentListCreateView(generics.ListCreateAPIView):
         # and include recipe-name from other model
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        recipe = Recipe.objects.get(id=self.kwargs.get('recipe_id'))  # Get recipe
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('recipe_id'))
+        # recipe = Recipe.objects.get(id=self.kwargs.get('recipe_id'))  # Get recipe
         return Response({
             'recipe_name': recipe.name,
             'comments': serializer.data
@@ -116,7 +122,28 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)    # Save the current user who posted the comment
+        recipe_id = self.kwargs.get('recipe_id')
+        recipe = get_object_or_404(Recipe, id=recipe_id)   # When recipe doesnt exist
+        serializer.save(user=self.request.user, recipe=recipe)    # Save the current user who posted the comment
+
+
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def get_object(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
+
+        # Check if user is author of comment
+        self.check_object_permissions(self.request, comment)
+        return comment
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if now() - instance.created_on > timedelta(minutes=15):
+            return Response({'detail': 'Comments can only beedited within 15 minutes after posting.'}, status=403)
+        return super().update(request, *args, **kwargs)
 
 
 @api_view(['GET'])
@@ -300,6 +327,7 @@ logger = logging.getLogger(__name__)
 
 class GenerateRecipePDFView(APIView):
     """View to create PDF for single recipe"""
+    permission_classes = [IsAuthenticated]
 
 
     def get(self, request, recipe_id):
@@ -403,6 +431,7 @@ class GenerateRecipePDFView(APIView):
 #         return response
 
 class LoginView(APIView):
+
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -432,3 +461,33 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"error": "Something went wrong"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class RecipeSearchView(APIView):
+    def get(selfself, request):
+        # Get parameters from URL
+        name = request.GET.get('name', None)
+        type_of_dish = request.GET.get('type_of_dish', None)
+        preparation_method = request.GET.get('preparation_method', None)
+        difficulty_level = request.GET.get('difficulty_level', None)
+        ingredient_type = request.GET.get('ingredient_type', None)
+
+        # Dynamic filters using Q
+        query = Q()
+        if name:
+            query &= Q(name__icontains=name)
+        if type_of_dish:
+            query &= Q(type_of_dish=type_of_dish)
+        if preparation_method:
+            query &= Q(preparation_method=preparation_method)
+        if difficulty_level:
+            query &= Q(difficulty_level=difficulty_level)
+        if ingredient_type:
+            query &= Q(ingredient_type=ingredient_type)
+
+        # Filter objects
+        recipes = Recipe.objects.filter(query).order_by('-id')
+
+        #serialize results
+        serializer = RecipeSerializer(recipes, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
