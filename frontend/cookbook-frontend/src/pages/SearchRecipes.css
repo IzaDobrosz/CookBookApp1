@@ -1,0 +1,47 @@
+.search-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.filters input,
+.filters select {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filters button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.results {
+  margin-top: 20px;
+}
+
+.recipe-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.clear-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.clear-btn:hover {
+  background-color: #cc0000;
+}

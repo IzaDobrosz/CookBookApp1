@@ -7,7 +7,7 @@ const Logout = () => {
         const token = localStorage.getItem("token");
         try {
             await axios.post(
-                "/logout/",
+                "/api/logout/",
                 {},
                 { headers : { Authorization: `Token ${token}`}}
             );

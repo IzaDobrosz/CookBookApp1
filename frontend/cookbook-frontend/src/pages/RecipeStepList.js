@@ -10,7 +10,7 @@ const RecipeStepList = () => {
     useEffect(() => {
         const fetchSteps = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/recipe/${recipeId}/steps/`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/recipe/${recipeId}/steps/`);
                 console.log(response.data.results);
                 setRecipeSteps(response.data.results); // Store the steps in state
             } catch (error) {
@@ -36,7 +36,7 @@ const RecipeStepList = () => {
             <ul>
                 {recipeSteps.map((step) => (
                     <li key={step.step_number}>
-                        <Link to={`/recipe/${recipeId}/steps/${step.step_number}`}>
+                        <Link to={`/recipe/${recipeId}/steps/${step.step_number}/`}>
                             Step {step.step_number}: {step.instruction}
                         </Link>
                     </li>

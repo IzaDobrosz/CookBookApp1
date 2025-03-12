@@ -1,21 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../pages/AuthContext"; // Import AuthContext
 import "./Login.css";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext); // Wyciągamy funkcję setUser z AuthContext
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        try{
-            const response = await axios.post("/login/", {
+        try {
+            const response = await axios.post("/api/login/", {
                 username,
                 password,
             });
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user_id", response.data.id);
+            localStorage.setItem("username", response.data.username);
+
+            // Set user in AuthContext
+            setUser({
+                username: response.data.username,
+                id: response.data.id,
+            });
+
             alert("Login successful!");
+            navigate("/landing_page/");
         } catch (err) {
             setError("Invalid credentials");
         }

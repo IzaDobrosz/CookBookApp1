@@ -22,7 +22,7 @@ const RecipeStep = () => {
         const fetchRecipeSteps = async () => {
             try {
                 // Fetch all steps for the recipe
-                const response = await axios.get(`http://127.0.0.1:8000/recipe/${recipeId}/steps/`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/recipe/${recipeId}/steps/`);
                 const steps = response.data.results;
                 setRecipeSteps(steps);
 
@@ -114,7 +114,7 @@ const RecipeStep = () => {
     const handleNextStep = () => {
         const nextStep = parseInt(stepNumber, 10) + 1;
         if (nextStep <= recipeSteps.length) {
-            navigate(`/recipe/${recipeId}/steps/${nextStep}`);
+            navigate(`/recipe/${recipeId}/steps/${nextStep}/`);
         } else {
             setShowEndPopup(true); // Show popup on last step
             setTimeout(() => setShowEndPopup(false), 5000); // Hide popup
@@ -124,7 +124,7 @@ const RecipeStep = () => {
     const handlePreviousStep = () => {
         const previousStep = parseInt(stepNumber, 10) - 1;
         if (previousStep > 0) {
-            navigate(`/recipe/${recipeId}/steps/${previousStep}`);
+            navigate(`/recipe/${recipeId}/steps/${previousStep}/`);
         }
     };
 

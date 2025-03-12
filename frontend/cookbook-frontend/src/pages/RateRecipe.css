@@ -1,0 +1,18 @@
+
+.rating-section {
+    margin-top: 20px;
+}
+
+.stars {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.star {
+    color: gray;
+    transition: color 0.3s;
+}
+
+.star.selected {
+    color: gold;
+}

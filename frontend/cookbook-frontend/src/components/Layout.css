@@ -1,3 +1,56 @@
+/*!* Style of upper bar *!*/
+/*.header {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    background-color: #ff8c00;*/
+/*    color: white;*/
+/*    padding: 10px 20px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.logo a {*/
+/*    font-size: 1.5rem;*/
+/*    font-weight: bold;*/
+/*    text-decoration: none;*/
+/*    color: white;*/
+/*}*/
+
+/*.nav a {*/
+/*    margin: 0 10px;*/
+/*    text-decoration: none;*/
+/*    color: white;*/
+/*    font-size: 1rem;*/
+/*}*/
+
+/*.nav a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/*!* Style of main content *!*/
+/*.content {*/
+/*    min-height: 70vh;*/
+/*    padding: 20px;*/
+/*    background-color: #f9f9f9;*/
+/*}*/
+
+/*!* Style of bottom bar *!*/
+/*.footer {*/
+/*    background-color: #333;*/
+/*    color: white;*/
+/*    text-align: center;*/
+/*    padding: 20px;*/
+/*}*/
+
+/*.footer-links a {*/
+/*    margin: 0 10px;*/
+/*    text-decoration: none;*/
+/*    color: white;*/
+/*}*/
+
+/*.footer-links a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
 /* Style of upper bar */
 .header {
     display: flex;
@@ -16,15 +69,43 @@
     color: white;
 }
 
-.nav a {
-    margin: 0 10px;
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Odstęp między elementami nawigacji */
+}
+
+.nav a, .login-button, .logout-button { /* Wspólny styl dla linków i przycisków */
     text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav a:hover, .login-button:hover, .logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Subtelne tło przy najechaniu */
+}
+
+.login-button, .logout-button {
+    border: 2px solid #ff4500; /* Czerwone obramowanie */
+    background-color: transparent; /* Przezroczyste tło */
+}
+
+.user-menu {
+    display: flex;
+    flex-direction: column; /* Ustawienie elementów w kolumnie */
+    align-items: flex-start; /* Wyrównanie tekstu i przycisków do lewej */
     color: white;
     font-size: 1rem;
 }
 
-.nav a:hover {
-    text-decoration: underline;
+.user-menu span {
+    font-weight: bold;
+    color: #ffe4b5; /* Jasny pomarańczowy dla "Witaj, {username}" */
+    margin-bottom: 5px; /* Odstęp między tekstem "Witaj" a przyciskiem */
 }
 
 /* Style of main content */
@@ -42,10 +123,16 @@
     padding: 20px;
 }
 
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Odstęp między linkami w stopce */
+}
+
 .footer-links a {
-    margin: 0 10px;
     text-decoration: none;
     color: white;
+    font-size: 1rem;
 }
 
 .footer-links a:hover {

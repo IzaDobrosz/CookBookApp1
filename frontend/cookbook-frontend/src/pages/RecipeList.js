@@ -11,10 +11,10 @@ const RecipeList = () => {
   useEffect(() => {
       const fetchRecipes = async () => {
       try {
-          const response = await axios.get('http://127.0.0.1:8000/recipes/');
+          const response = await axios.get('http://127.0.0.1:8000/api/recipes/');
           const detailedRecipes = await Promise.all(
               response.data.results.map(async(recipe) => {
-                  const detailResponse = await axios.get(`http://127.0.0.1:8000/recipe/${recipe.id}/`);
+                  const detailResponse = await axios.get(`http://127.0.0.1:8000/api/recipe/${recipe.id}/`);
                   return detailResponse.data;
                   })
           );

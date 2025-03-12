@@ -16,7 +16,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchLandingPage = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/landing-page/');
+                const response = await axios.get('http://127.0.0.1:8000/api/landing_page/');
                 setNewRecipes(response.data.new_recipes);
                 setPopularRecipes(response.data.popular_recipes);
                 setStats({ total_recipes: response.data.total_recipes });
@@ -43,7 +43,7 @@ const LandingPage = () => {
                     {newRecipes.map((recipe) => (
                         <Link
                              key={recipe.id}
-                             to={`/recipe/${recipe.id}`}
+                             to={`/recipe/${recipe.id}/`}
                              className="recipe-link"
                         >
                             {recipe.name}  {/* display recipe name */}
@@ -56,7 +56,14 @@ const LandingPage = () => {
                 <h2>Popular Recipes</h2>
                 <div className="recipes-grid">
                     {popularRecipes.map((recipe) => (
-                        <RecipeDetail key={recipe.id} recipe={recipe.name}/>
+                        // <RecipeDetail key={recipe.id} recipe={recipe.name}/>
+                        <Link
+                             key={recipe.id}
+                             to={`/recipe/${recipe.id}/`}
+                             className="recipe-link"
+                        >
+                            {recipe.name}  {/* display recipe name */}
+                        </Link>
                     ))}
                 </div>
             </section>

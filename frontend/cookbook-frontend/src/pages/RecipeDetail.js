@@ -1,79 +1,89 @@
 // src/RecipeDetail.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {useNavigate, useParams} from 'react-router-dom'; // Access to the URL params
+import { useNavigate, useParams } from 'react-router-dom'; // Access to the URL params
 import { ClockIcon, UserGroupIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { RecipePDFButton } from "./PdfWithRecipe";
+import FavoriteButton from './SetFavoriteRecipe';
+// import FavoriteRecipeNotes from './FavoriteRecipeNotes'; // Import the FavoriteRecipeNotes component
 import './RecipeDetail.css';
-
-
+import RateRecipe from "./RateRecipe";
 
 const RecipeDetail = () => {
     const params = useParams(); // Access to ID from URL
     const navigate = useNavigate();
     const [recipe, setRecipe] = useState(null);  // State to store recipe details
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
     const [error, setError] = useState(null);     // State to store errors
-    const [showComments, setShowComments] = useState(false);  // For expanding the comment section
-    const [showAddComment, setAddComment] = useState(false);
-
-    const isLoggedIn = !!localStorage.getItem('token'); // Check if the user is logged in
+    const [notes, setNotes] = useState(''); // State to manage notes
+    const [isFavorite, setIsFavorite] = useState(false); // State to check if the recipe is a favorite
 
     useEffect(() => {
         if (!params.id) { // Sprawdza, czy 'id' jest obecne w URL
         setError('Recipe ID not found in URL.');
         return;
         }
+
+        // Fetch recipe details
         const fetchRecipe = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/recipe/${params.id}/`);
+                const response = await axios.get(`/api/recipe/${params.id}/`);
                 console.log(response.data, response.data)
                 setRecipe(response.data);
             } catch (error) {
                 setError('Failed to load recipe');
-                console.log(error);
-            }
-        };
-
-        const fetchComments = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/recipe/${params.id}/comments/`);
-                setComments(response.data);
-            } catch (error) {
                 console.error(error);
             }
         };
 
+        // Check if recipe is a favorite and fetch notes
+        const fetchFavoriteDetails = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.warn('Token not found in localStorage');
+                return;
+            }
+
+            if (!params.id) {
+                console.error('Recipe ID is undefined.');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`/api/notes/${params.id}/`, {
+                    headers: { Authorization: `Token ${token}` },
+                });
+
+                if (response.status === 200) {
+                    setIsFavorite(true);
+                    setNotes(response.data.notes || ''); // Fetch existing notes
+                }
+            } catch (error) {
+                console.error('Failed to fetch favorite details:', error);
+                setIsFavorite(false);  // Recipe not favorite=>hide notes
+            }
+        };
+
         fetchRecipe();
-        fetchComments();
+        fetchFavoriteDetails();
     }, [params.id]);
 
+    const handleSaveNotes = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to save notes.');
+            return;
+        }
 
-    const handleShowComments = () => {
-        navigate(`/recipe/${params.id}/comments`);
-    };
-
-    const handleAddComment = async () => {
-        if (newComment.trim() === '') return;   // Avoid submitting empty comments
         try {
-            const response = await axios.post(
-                `http://127.0.0.1:8000/recipe/${params.id}/comments/`,
-                {comment: newComment},
-                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}  // Use your auth token method
-            );
-            setComments([...comments, response.data]);  // Update comments list
-            setNewComment('');    // Clear the input field
-            setAddComment(false);   // Hide the input field after submission
+            await axios.post(`/api/notes/${params.id}/`, { notes }, {
+                headers: { Authorization: `Token ${token}` },
+            });
+            alert('Notes saved successfully!');
         } catch (error) {
-            console.error('Error adding comment:', error);
+            console.error('Failed to save notes:', error);
+            alert('Failed to save notes.');
         }
     };
-
-
-    //  // Function to toggle visibility of comments
-    // const toggleComments = () => setShowComments(!showComments);
-
 
     if (error) {
         return <p>{error}</p>;
@@ -84,7 +94,7 @@ const RecipeDetail = () => {
     }
     // Function to serve "Start cooking button"
     const handleStartCooking = () => {
-        navigate(`/recipe/${params.id}/steps/1`);
+        navigate(`/recipe/${params.id}/steps/1/`);
     };
 
     return (
@@ -94,30 +104,36 @@ const RecipeDetail = () => {
                 alt={recipe.name}
                 className="recipe-image"
             />
-
             <h1 className="recipe-name">{recipe.name}</h1>
-
             {/* Button to download recipe PDF */}
             {recipe && <RecipePDFButton recipeId={params.id} />}
 
+            {/* Dodaj przycisk ulubionych */}
+            <FavoriteButton recipeId={recipe.id} />
+
             <p className="recipe-description">{recipe.description}</p>
+
+            <div>
+            {/* Rating */}
+            <RateRecipe recipeId={params.id} />
+            </div>
 
             {/* Pasek z ikonami i parametrami w jednej linii */}
             <div className="recipe-info-bar">
                 <div className="recipe-info-item">
-                    <ClockIcon className="icon-small"/>
+                    <ClockIcon className="icon-small" />
                     <span><strong>Prep Time:</strong> {recipe.prep_time} min</span>
                 </div>
                 <div className="recipe-info-item">
-                    <ClockIcon className="icon-small"/>
+                    <ClockIcon className="icon-small" />
                     <span><strong>Total Time:</strong> {recipe.total_time} min</span>
                 </div>
                 <div className="recipe-info-item">
-                    <UserGroupIcon className="icon-small"/>
+                    <UserGroupIcon className="icon-small" />
                     <span><strong>Servings:</strong> {recipe.servings}</span>
                 </div>
                 <div className="recipe-info-item">
-                    <WrenchScrewdriverIcon className="icon-small"/>
+                    <WrenchScrewdriverIcon className="icon-small" />
                     <span><strong>Tools:</strong> {recipe.tools}</span>
                 </div>
             </div>
@@ -154,7 +170,21 @@ const RecipeDetail = () => {
                 </button>
             </div>
 
-
+            {/* Dynamic Notes Section */}
+            {isFavorite && (
+                <div className="notes-section">
+                    <h2 className="section-title">Your notes</h2>
+                    <textarea
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Add your notes here ..."
+                        className="notes-textarea"
+                    />
+                    <button onClick={handleSaveNotes} className="save-notes-btn">
+                        Save Notes
+                    </button>
+                </div>
+            )}
 
 
             {/*<div className="mb-4">*/}
@@ -181,7 +211,7 @@ const RecipeDetail = () => {
                         recipe.tags.map(tag => (
                             <span
                                 key={tag.id}
-                                style={{backgroundColor: tag.tag_color}}
+                                style={{ backgroundColor: tag.tag_color}}
                                 className="tag-item"
                             >
               {tag.tag_name}
@@ -193,51 +223,9 @@ const RecipeDetail = () => {
                 </div>
             </div>
 
-            {/* Comments Section */}
-            <div className="comments-section">
-                <div className="comments-actions">
-                    <button onClick={handleShowComments}>Show Comments</button>
-                    {isLoggedIn && (
-                        <button onClick={() => setAddComment(!showAddComment)}>
-                            {showAddComment ? 'Cancel' : 'Add comment'}
-                        </button>
-                    )}
-                </div>
-
-                {showComments && (
-                    <div>
-                        <div className="comments-list">
-                            {comments.length > 0 ? (
-                                comments.map((comment) => (
-                                    <div key={comment.id} className="comment-item">
-                                        <p>
-                                            <strong>{comment.user}</strong> on {new Date(comment.created_on).toLocaleDateString()}
-                                        </p>
-                                        <p>{comment.comment}</p>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No comments yet</p>
-                            )}
-                        </div>
-
-                        {/* Add a Comment */}
-                        {showAddComment && (
-                            <div className="add-comment">
-                                <textarea
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    placeholder="Write your comment here..."
-                                    className="add-comment-textarea"
-                                />
-                                <button onClick={handleAddComment} className="send-comment-btn">
-                                    Send comment
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+            <button onClick={() => navigate(`/recipe/${params.id}/comments/`)} className="comments-button">
+                View and Manage Comments
+            </button>
         </div>
     );
 };
