@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.reverse import reverse
-from .models import Tag, Recipe, Comment, RecipeStep
+from .models import Tag, Recipe, Comment, RecipeStep, FavoriteRecipes, Rating
 
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,7 +12,9 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
-    # steps_url = serializers.SerializerMethodField()  # Declare steps_url as a custom field
+    notes = serializers.SerializerMethodField()
+    is_favorite = serializers.SerializerMethodField()
+    average_rating = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Recipe
@@ -20,8 +22,25 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
             'url', 'id', 'name', 'description', 'prep_time', 'total_time',
             'servings', 'ingredients', 'tools', 'preparation_steps', 'type_of_dish',
             'preparation_method','ingredient_type','preparation_time','difficulty_level',
-            'created_on', 'updated_on','tags'
+            'created_on', 'updated_on','tags', 'notes', 'is_favorite', 'average_rating',
         ]
+
+    def get_notes(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            favorite = FavoriteRecipes.objects.filter(recipe=obj, user=user).first()
+            return favorite.notes if favorite else None
+        return None
+
+    def get_is_favorite(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return FavoriteRecipes.objects.filter(recipe=obj, user=user).exists()
+        return False
+
+
+
+
 
     # def get_steps_url(self, obj):
     #     """Generate the URL for the steps of certain recipe."""
@@ -50,11 +69,11 @@ class RecipeStepSerializer(serializers.HyperlinkedModelSerializer):
         return None
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(source='user.id', read_only=True)
     class Meta:
         model = Comment
-        fields = ['id', 'recipe', 'user', 'comment', 'created_on']
-        read_only_fields = ['user', 'created_on']
+        fields = ['id', 'recipe', 'user', 'user_id', 'comment', 'created_on']
+        read_only_fields = ['user', 'user_id', 'created_on', 'recipe']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -65,8 +84,26 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
    that can be rendered into JSON or other content types. It includes the
    user's URL, ID, username, and their related categories (read-only).
    """
-    recipes = serializers.HyperlinkedRelatedField(many=True, view_name='category-detail', read_only=True)
+    recipes = serializers.HyperlinkedRelatedField(many=True, view_name='recipe-detail', read_only=True)
+    favorite_recipes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'recipes']
+        fields = ['url', 'id', 'username', 'recipes', 'favorite_recipes']
+
+
+class FavoriteRecipesSerializer(serializers.ModelSerializer):
+    recipe_id = serializers.IntegerField(source='recipe.id', read_only=True)
+    recipe_name = serializers.CharField(source='recipe.name', read_only=True)
+
+    class Meta:
+        model = FavoriteRecipes
+        fields = ['recipe_id', 'user', 'added_on', 'notes', 'cookbook_name', 'recipe_name']
+        read_only_fields = ['user', 'added_on', 'cookbook_name']
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['id', 'recipe', 'user', 'rating', 'created_on']
+        read_only_fields = ['user', 'created_on']

@@ -6,11 +6,13 @@ from textwrap import wrap
 
 from django.contrib.auth import authenticate
 from django.core.serializers import serialize
+from django.db.migrations import serializer
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.defaulttags import comment
 from rest_framework import generics, permissions
+from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -27,12 +29,18 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
-from .models import Tag, Recipe, User, RecipeStep, Comment
-from .serializers import TagSerializer, RecipeSerializer, UserSerializer, RecipeStepSerializer, CommentSerializer
+from rest_framework.viewsets import ModelViewSet
+from django.db.models import Avg, Value
+from django.db.models.functions import Coalesce
+
+from .models import Tag, Recipe, User, RecipeStep, Comment, FavoriteRecipes, Rating
+from .serializers import TagSerializer, RecipeSerializer, UserSerializer, RecipeStepSerializer, CommentSerializer, \
+    FavoriteRecipesSerializer, RatingSerializer
 from .permissions import IsOwnerOrReadOnly
 from datetime import timedelta
 from django.utils.timezone import now
 import logging
+
 
 class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
@@ -142,7 +150,7 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if now() - instance.created_on > timedelta(minutes=15):
-            return Response({'detail': 'Comments can only beedited within 15 minutes after posting.'}, status=403)
+            return Response({'detail': 'Comments can only be edited within 15 minutes after posting.'}, status=403)
         return super().update(request, *args, **kwargs)
 
 
@@ -180,7 +188,8 @@ class LandingPageView(APIView):
         # Fetch 5 newest recipes
         new_recipes = Recipe.objects.order_by('-created_on')[:5]
         # Fetch 5 most popular recipes
-        popular_recipes = Recipe.objects.all()[:5]   # ten kod do POPRAWY JAK BEDA STATISTIC
+        popular_recipes = Recipe.objects.annotate(average_rating=Avg('ratings__rating')) \
+                                    .order_by('-average_rating')[:5]   # ten kod do SPRAWDZENIA
         # Count all recipes
         recipe_count = Recipe.objects.count()
 
@@ -193,15 +202,145 @@ class LandingPageView(APIView):
         return Response(data)
 
 
-class FavoriteRecipesView(APIView):
-    "View to save favorite recipes"
-    permission_classes = [permissions.IsAuthenticated]
+# class FavoriteRecipesView(APIView):
+#     """
+#     View to handle user's favorite recipes:
+#     - GET: Retrieve all favorite recipes of the authenticated user.
+#     - POST: Add a new recipe to favorites.
+#     - PATCH: Update notes for a favorite recipe.
+#     - DELETE: Remove a recipe from favorites.
+#     """
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self, request):
+#         """
+#         Get all favorite recipes for the logged-in user.
+#         """
+#         user = request.user
+#         favorite_recipes = FavoriteRecipes.objects.filter(user=user)  # Get all favorite recipes of user
+#         # Add context to the serializer
+#         serializer = FavoriteRecipesSerializer(favorite_recipes, many=True, context={'request': request})
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     def post(self, request):
+#         """
+#         Add a recipe to favorites.
+#         """
+#         recipe_id = request.data.get("recipe_id")
+#         notes = request.data.get("notes", "")  # Default notes to an empty string
+#
+#         try:
+#             recipe = Recipe.objects.get(id=recipe_id)
+#         except Recipe.DoesNotExist:
+#             return Response({'message': 'Recipe not found.'}, status=status.HTTP_404_NOT_FOUND)
+#
+#         favorite, created = FavoriteRecipes.objects.get_or_create(
+#             user=request.user, recipe=recipe,
+#             defaults={'notes': notes}
+#         )
+#
+#         if created:
+#             # Add context to the serializer
+#             return Response({
+#                 'message': 'Recipe added to favorites.',
+#                 'recipe': FavoriteRecipesSerializer(favorite, context={'request': request}).data  # Return created favorite details
+#             }, status=status.HTTP_201_CREATED)
+#
+#         return Response({
+#             'message': 'Recipe is already in favorites.',
+#             'recipe': FavoriteRecipesSerializer(favorite, context={'request': request}).data  # Include existing favorite details
+#         }, status=status.HTTP_200_OK)
+#
+#     def patch(self, request, recipe_id):
+#         """
+#         Update notes for a favorite recipe.
+#         """
+#         try:
+#             favorite = FavoriteRecipes.objects.get(user=request.user, recipe_id=recipe_id)
+#         except FavoriteRecipes.DoesNotExist:
+#             return Response({'message': 'Recipe not in favorites.'}, status=status.HTTP_404_NOT_FOUND)
+#
+#         notes = request.data.get("notes", "")  # Default to an empty string if notes are not provided
+#         favorite.notes = notes
+#         favorite.save()
+#         return Response({
+#             'message': 'Notes updated successfully.',
+#             'notes': favorite.notes
+#         }, status=status.HTTP_200_OK)
+#
+#     def delete(self, request, recipe_id):
+#         """
+#         Remove a recipe from favorites.
+#         """
+#         try:
+#             favorite = FavoriteRecipes.objects.get(user=request.user, recipe_id=recipe_id)
+#             favorite.delete()
+#             return Response({'message': 'Recipe removed from favorites.'}, status=status.HTTP_204_NO_CONTENT)
+#         except FavoriteRecipes.DoesNotExist:
+#             return Response({'message': 'Recipe not found in Favorites.'}, status=status.HTTP_404_NOT_FOUND)
+#
+class FavoriteRecipesListView(generics.ListCreateAPIView):
+    """
+    View for listing favorite recipes.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = FavoriteRecipesSerializer
 
-    def get(self, request):
-        user = request.user
-        favorite_recipes = user.favorite_recipes.all()    # Get all favorite recipes of user
-        serializer = RecipeSerializer(favorite_recipes, many=True)
-        return Response(serializer.data)
+
+    def get_queryset(self):
+        """
+        Return favorite recipes for the authenticated user.
+        """
+        return FavoriteRecipes.objects.filter(user=self.request.user).select_related('recipe')
+
+
+class AddToFavoriteView(APIView):
+
+    def post(self, request, recipe_id, format=None):
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+
+        # Check if recipe id alresy in favorites
+        favorite_recipe, created = FavoriteRecipes.objects.get_or_create(user=user, recipe=recipe)
+        if created:
+            return Response({'detail': 'Recipe has been added.'}, status=status.HTTP_201_CREATED)
+        return Response({'detail': 'Recipe already exists in favorites.'}, status=status.HTTP_200_OK)
+
+
+class RemoveFromFavoriteView(APIView):
+
+    def delete(self, request, recipe_id, format=None):
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+
+        # Check if recipe is in favorites
+        favorite = FavoriteRecipes.objects.filter(user=user, recipe=recipe)
+        if favorite:
+            favorite.delete()
+            return Response({'detail': 'Recipe has been removed.'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Recipe is not in favorites.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class RecipeNotesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, recipe_id):
+        # Check if in user's favorites
+        try:
+            favorite = FavoriteRecipes.objects.get(user=request.user, recipe_id=recipe_id)
+            return Response({"notes": favorite.notes}, status=status.HTTP_200_OK)
+        except FavoriteRecipes.DoesNotExist:
+            return Response({"notes": None}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, recipe_id):
+        """Add/update notes"""
+        try:
+            favorite, created = FavoriteRecipes.objects.get_or_create(user=request.user, recipe_id=recipe_id)
+            favorite.notes = request.data.get("notes", "")
+            favorite.save()
+            return Response({"message": "Note updated successfully."}, status=status.HTTP_201_CREATED)
+        except FavoriteRecipes.DoesNotExist:
+            return Response({"error": "Recipe not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 # class GenerateRecipePDFView(APIView):
@@ -445,6 +584,7 @@ class LoginView(APIView):
                 'token': token.key,
                 'username': user.username,
                 'email': user.email,
+                'id': user.id,
             }, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -463,31 +603,103 @@ class LogoutView(APIView):
 
 
 class RecipeSearchView(APIView):
-    def get(selfself, request):
-        # Get parameters from URL
+    """
+    API endpoint for searching and filtering recipes.
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(selfself, request, *args, **kwargs):
+        # Extract query parameters
+        query = request.GET.get('q', '')  # Search query
         name = request.GET.get('name', None)
         type_of_dish = request.GET.get('type_of_dish', None)
         preparation_method = request.GET.get('preparation_method', None)
         difficulty_level = request.GET.get('difficulty_level', None)
         ingredient_type = request.GET.get('ingredient_type', None)
+        preparation_time = request.GET.get('preparation_time', None)
+        tags = request.GET.get('tags', '')
+        if tags:
+            tags = tags.split(',')
+        favorites_only = request.GET.get('favorites', 'false') == 'true' # Only favorites
 
-        # Dynamic filters using Q
-        query = Q()
+        # Base queryset
+        recipe_queryset = Recipe.objects.all()
+        # Dynamic filters using Q object
+        filters = Q()
+
+        if query:
+            filters &= (
+                 Q(name__icontains=query) |
+                 Q(description__icontains=query) |
+                 Q(ingredients__icontains=query)
+            )
+
         if name:
-            query &= Q(name__icontains=name)
+            filters &= Q(name__icontains=name)
         if type_of_dish:
-            query &= Q(type_of_dish=type_of_dish)
+            filters &= Q(type_of_dish=type_of_dish)
         if preparation_method:
-            query &= Q(preparation_method=preparation_method)
+            filters &= Q(preparation_method=preparation_method)
         if difficulty_level:
-            query &= Q(difficulty_level=difficulty_level)
+            filters &= Q(difficulty_level=difficulty_level)
         if ingredient_type:
-            query &= Q(ingredient_type=ingredient_type)
+            filters &= Q(ingredient_type=ingredient_type)
+        if preparation_time:
+            filters &= Q(preparation_time=preparation_time)
 
-        # Filter objects
-        recipes = Recipe.objects.filter(query).order_by('-id')
+        if tags:
+            filters &= Q(tags__tag_name__in=tags)
 
-        #serialize results
-        serializer = RecipeSerializer(recipes, many=True)
+        # Apply favorites filter if user is authenticated
+        if favorites_only and request.user.is_authenticated:
+            recipe_queryset = recipe_queryset.filter(user_favorites=request.user)
+            # favorite_recipes_ids = request.user.favorites.values_list('recipe_id', flat=True)
+            # filters &= Q(id__in=favorite_recipes_ids)
+
+        # Filter queryset
+        recipe_queryset = recipe_queryset.filter(filters).distinct().order_by('-id')
+        print(recipe_queryset.query)
+        print(tags)
+
+        # Serialize results
+        serializer = RecipeSerializer(recipe_queryset, many=True, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RatingCreateView(generics.CreateAPIView):
+    serializer_class = RatingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        recipe_id = self.request.data.get('recipe')
+        rating_value = self.request.data.get('rating')
+
+        if not recipe_id or not rating_value:
+            raise ValueError("Recipe ID and rating are required.")
+
+        recipe = Recipe.objects.get(id=recipe_id)
+
+        rating, created = Rating.objects.get_or_create(
+            user=self.request.user,
+            recipe=recipe,
+            defaults={'rating': rating_value}
+        )
+
+        if not created:
+            rating.rating = rating_value  # Update rating
+            rating.save()
+
+        return rating
+
+class RecipeRatingsView(generics.RetrieveAPIView):
+    queryset = Recipe.objects.annotate(average_rating=Coalesce(Avg('ratings__rating'), Value(0.0)))
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+
+        return self.queryset.get(id=self.kwargs["pk"])
+
+
+

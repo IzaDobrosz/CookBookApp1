@@ -79,6 +79,7 @@ class Recipe(models.Model):
     # Tags for additional flexible classification
     tags = models.ManyToManyField(Tag, related_name='recipes')
 
+
     class Meta:
         ordering = ['created_on']
 
@@ -138,3 +139,28 @@ class Comment(models.Model):
 # Extension of User model to serve "favorites"
 class User(AbstractUser):
     favorite_recipes = models.ManyToManyField('Recipe', related_name='favorited_by', blank=True)
+
+
+class FavoriteRecipes(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorited_by')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorites')
+    cookbook_name = models.CharField(max_length=255, verbose_name="Cookbook name", default="My CookBook", blank=True)
+    added_on = models.DateTimeField(auto_now_add=True, verbose_name="Added on")
+    notes = models.TextField(blank=True, null=True, verbose_name="Notes", default="")
+
+    class Meta:
+        ordering = ['added_on']
+        unique_together = ('user', 'recipe')
+
+    def __str__(self):
+        return f'{self.user.username}: {self.cookbook_name}'
+
+
+class Rating(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(default=0, verbose_name="Rating")
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('recipe', 'user')
