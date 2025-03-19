@@ -116,6 +116,7 @@ const RecipeDetail = () => {
             <div>
             {/* Rating */}
             <RateRecipe recipeId={params.id} />
+
             </div>
 
             {/* Pasek z ikonami i parametrami w jednej linii */}

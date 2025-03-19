@@ -3,7 +3,7 @@ import axios from "axios";
 
 const RateRecipe = ({ recipeId }) => {
     const [rating, setRating] = useState(0);
-    const [recipe, setRecipe] = useState(null);
+    const [recipe, setRecipe] = useState({ average_rating: 0 });
     const [message, setMessage] = useState("");
 
 
@@ -64,7 +64,7 @@ const RateRecipe = ({ recipeId }) => {
                 ))}
             </div>
             {/*{recipe && <p>Average rating: {recipe.average_rating.toFixed(1)} ⭐ ({recipe.average_rating}/5)</p>}*/}
-            {recipe && recipe.average_rating !== undefined ? (
+            {recipe && recipe.average_rating !== null ? (
                 <p>Average rating: {recipe.average_rating.toFixed(1)} ⭐ ({recipe.average_rating}/5)</p>
             ) : (
                 <p>Average rating: No ratings yet.</p>
