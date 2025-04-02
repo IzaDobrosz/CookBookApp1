@@ -23,7 +23,8 @@ from recipes.models import Recipe
 from recipes.views import TagListView, TagDetailView, RecipeListView, RecipeDetailView, RecipeStepDetailView, \
     RecipeAllStepsListView, CommentListCreateView, LandingPageView, GenerateRecipePDFView, \
     LoginView, LogoutView, RecipeSearchView, CommentDetailView, AddToFavoriteView, \
-    RemoveFromFavoriteView, FavoriteRecipesListView, RecipeNotesView, RatingCreateView, RecipeRatingsView
+    RemoveFromFavoriteView, FavoriteRecipesListView, RecipeNotesView, RatingCreateView, RecipeRatingsView, \
+    PopularRecipesView, GeneralStatisticsView
 from recipes import views
 
 urlpatterns = [
@@ -52,4 +53,6 @@ urlpatterns = [
     path('api/', views.api_root),
     path('api/rating/', RatingCreateView.as_view(), name='rate-recipe'),
     path('api/recipe/<int:recipe_id>/ratings/', RecipeRatingsView.as_view(), name='recipe-ratings'),
+    path('api/popular-recipes/', PopularRecipesView.as_view(), name='popular-recipes'),
+    path('api/statistics/', GeneralStatisticsView.as_view(), name='general-statistics'),
 ]

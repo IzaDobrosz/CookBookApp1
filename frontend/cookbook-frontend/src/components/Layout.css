@@ -1,4 +1,4 @@
-/*!* Style of upper bar *!*/
+/* Style of upper bar */
 /*.header {*/
 /*    display: flex;*/
 /*    justify-content: space-between;*/
@@ -16,15 +16,43 @@
 /*    color: white;*/
 /*}*/
 
-/*.nav a {*/
-/*    margin: 0 10px;*/
+/*.nav {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 15px; !* Odstęp między elementami nawigacji *!*/
+/*}*/
+
+/*.nav a, .login-button, .logout-button { !* Wspólny styl dla linków i przycisków *!*/
 /*    text-decoration: none;*/
+/*    color: white;*/
+/*    font-size: 1rem;*/
+/*    font-weight: bold;*/
+/*    padding: 5px 10px;*/
+/*    border-radius: 5px;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
+
+/*.nav a:hover, .login-button:hover, .logout-button:hover {*/
+/*    background-color: rgba(255, 255, 255, 0.2); !* Subtelne tło przy najechaniu *!*/
+/*}*/
+
+/*.login-button, .logout-button {*/
+/*    border: 2px solid #ff4500; !* Czerwone obramowanie *!*/
+/*    background-color: transparent; !* Przezroczyste tło *!*/
+/*}*/
+
+/*.user-menu {*/
+/*    display: flex;*/
+/*    flex-direction: column; !* Ustawienie elementów w kolumnie *!*/
+/*    align-items: flex-start; !* Wyrównanie tekstu i przycisków do lewej *!*/
 /*    color: white;*/
 /*    font-size: 1rem;*/
 /*}*/
 
-/*.nav a:hover {*/
-/*    text-decoration: underline;*/
+/*.user-menu span {*/
+/*    font-weight: bold;*/
+/*    color: #ffe4b5; !* Jasny pomarańczowy dla "Witaj, {username}" *!*/
+/*    margin-bottom: 5px; !* Odstęp między tekstem "Witaj" a przyciskiem *!*/
 /*}*/
 
 /*!* Style of main content *!*/
@@ -42,99 +70,489 @@
 /*    padding: 20px;*/
 /*}*/
 
+/*.footer-links {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    gap: 10px; !* Odstęp między linkami w stopce *!*/
+/*}*/
+
 /*.footer-links a {*/
-/*    margin: 0 10px;*/
 /*    text-decoration: none;*/
 /*    color: white;*/
+/*    font-size: 1rem;*/
 /*}*/
 
 /*.footer-links a:hover {*/
 /*    text-decoration: underline;*/
 /*}*/
-/* Style of upper bar */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ff8c00;
-    color: white;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+/*1*/
+/*!* Layout Styles *!*/
+/*.layout {*/
+/*  font-family: 'Arial', sans-serif;*/
+/*  background-color: #f9f9f9;*/
+/*  color: #333;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  min-height: 100vh;*/
+/*}*/
+
+/*.header {*/
+/*  background-color: #f7b733; !* Warm yellow-orange color *!*/
+/*  color: white;*/
+/*  padding: 15px;*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.header .logo {*/
+/*  font-size: 24px;*/
+/*  font-weight: bold;*/
+/*  color: white;*/
+/*  text-transform: uppercase;*/
+/*  letter-spacing: 2px;*/
+/*}*/
+
+/*.nav {*/
+/*  display: flex;*/
+/*  gap: 20px;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.nav a {*/
+/*  text-decoration: none;*/
+/*  color: white;*/
+/*  font-weight: 500;*/
+/*  font-size: 16px;*/
+/*  transition: color 0.3s ease;*/
+/*}*/
+
+/*.nav a:hover {*/
+/*  color: #ff6f61; !* Light red/orange hover effect *!*/
+/*}*/
+
+/*.user-menu {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  gap: 10px;*/
+/*  color: white;*/
+/*}*/
+
+/*.logout-button, .login-button {*/
+/*  background-color: #ff6f61; !* Light red/orange color for buttons *!*/
+/*  color: white;*/
+/*  border: none;*/
+/*  padding: 8px 16px;*/
+/*  font-size: 14px;*/
+/*  cursor: pointer;*/
+/*  border-radius: 5px;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.logout-button:hover, .login-button:hover {*/
+/*  background-color: #f05a41; !* Darker red on hover *!*/
+/*}*/
+
+/*.content {*/
+/*  background-color: white;*/
+/*  padding: 40px;*/
+/*  flex-grow: 1;*/
+/*}*/
+
+/*.footer {*/
+/*  background-color: #333;*/
+/*  color: white;*/
+/*  padding: 20px 40px;*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  font-size: 14px;*/
+/*}*/
+
+/*.footer-links {*/
+/*  display: flex;*/
+/*  gap: 20px;*/
+/*}*/
+
+/*.footer-links a {*/
+/*  color: white;*/
+/*  text-decoration: none;*/
+/*  transition: color 0.3s ease;*/
+/*}*/
+
+/*.footer-links a:hover {*/
+/*  color: #f7b733;*/
+/*}*/
+
+/*footer p {*/
+/*  text-align: right;*/
+/*}*/
+
+/*!* Add a nice card layout for the content area *!*/
+/*.card {*/
+/*  background-color: #ffffff;*/
+/*  padding: 20px;*/
+/*  border-radius: 10px;*/
+/*  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*  margin-bottom: 20px;*/
+/*}*/
+
+/*.card img {*/
+/*  width: 100%;*/
+/*  border-radius: 10px;*/
+/*  object-fit: cover;*/
+/*  height: 200px;*/
+/*}*/
+
+/*.card h2 {*/
+/*  color: #333;*/
+/*  font-size: 24px;*/
+/*  margin-top: 15px;*/
+/*}*/
+
+/*.card p {*/
+/*  font-size: 16px;*/
+/*  color: #666;*/
+/*  line-height: 1.6;*/
+/*}*/
+
+/*.card .recipe-buttons {*/
+/*  display: flex;*/
+/*  gap: 10px;*/
+/*  margin-top: 20px;*/
+/*}*/
+
+/*.card .recipe-buttons button {*/
+/*  padding: 10px 20px;*/
+/*  border: none;*/
+/*  border-radius: 5px;*/
+/*  background-color: #f7b733;*/
+/*  color: white;*/
+/*  font-size: 14px;*/
+/*  cursor: pointer;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.card .recipe-buttons button:hover {*/
+/*  background-color: #ff6f61;*/
+/*}*/
+
+/*2*/
+/* Layout Styles */
+/*.layout {*/
+/*  font-family: 'Arial', sans-serif;*/
+/*  background-color: #f4f4f4; !* Jasny beżowy kolor tła *!*/
+/*  color: #333; !* Ciemnoszare kolory tekstu dla lepszej czytelności *!*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  min-height: 100vh;*/
+/*}*/
+
+/*.header {*/
+/*  background-color: #6b8e23; !* Zielenie, bardziej naturalny kolor *!*/
+/*  color: white;*/
+/*  padding: 15px;*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.header .logo {*/
+/*  font-size: 24px;*/
+/*  font-weight: bold;*/
+/*  color: white;*/
+/*  text-transform: uppercase;*/
+/*  letter-spacing: 2px;*/
+/*}*/
+
+/*.nav {*/
+/*  display: flex;*/
+/*  gap: 20px;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.nav a {*/
+/*  text-decoration: none;*/
+/*  color: white;*/
+/*  font-weight: 500;*/
+/*  font-size: 16px;*/
+/*  transition: color 0.3s ease;*/
+/*}*/
+
+/*.nav a:hover {*/
+/*  color: #ff8c42; !* Złocisty pomarańczowy dla efektu najechania *!*/
+/*}*/
+
+/*.user-menu {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  gap: 10px;*/
+/*  color: white;*/
+/*}*/
+
+/*.logout-button, .login-button {*/
+/*  background-color: #8b4513; !* Ciemny brązowy kolor dla przycisków *!*/
+/*  color: white;*/
+/*  border: none;*/
+/*  padding: 8px 16px;*/
+/*  font-size: 14px;*/
+/*  cursor: pointer;*/
+/*  border-radius: 5px;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.logout-button:hover, .login-button:hover {*/
+/*  background-color: #a0522d; !* Jaśniejszy brązowy na hover *!*/
+/*}*/
+
+/*.content {*/
+/*  background-color: white;*/
+/*  padding: 40px;*/
+/*  flex-grow: 1;*/
+/*}*/
+
+/*.footer {*/
+/*  background-color: #2f4f4f; !* Ciemna zieleń dla stopki *!*/
+/*  color: white;*/
+/*  padding: 20px 40px;*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  font-size: 14px;*/
+/*}*/
+
+/*.footer-links {*/
+/*  display: flex;*/
+/*  gap: 20px;*/
+/*}*/
+
+/*.footer-links a {*/
+/*  color: white;*/
+/*  text-decoration: none;*/
+/*  transition: color 0.3s ease;*/
+/*}*/
+
+/*.footer-links a:hover {*/
+/*  color: #ff8c42; !* Złocisty pomarańczowy dla efektu hover *!*/
+/*}*/
+
+/*footer p {*/
+/*  text-align: right;*/
+/*}*/
+
+/*!* Add a nice card layout for the content area *!*/
+/*.card {*/
+/*  background-color: #ffffff;*/
+/*  padding: 20px;*/
+/*  border-radius: 10px;*/
+/*  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*  margin-bottom: 20px;*/
+/*}*/
+
+/*.card img {*/
+/*  width: 100%;*/
+/*  border-radius: 10px;*/
+/*  object-fit: cover;*/
+/*  height: 200px;*/
+/*}*/
+
+/*.card h2 {*/
+/*  color: #333;*/
+/*  font-size: 24px;*/
+/*  margin-top: 15px;*/
+/*}*/
+
+/*.card p {*/
+/*  font-size: 16px;*/
+/*  color: #666;*/
+/*  line-height: 1.6;*/
+/*}*/
+
+/*.card .recipe-buttons {*/
+/*  display: flex;*/
+/*  gap: 10px;*/
+/*  margin-top: 20px;*/
+/*}*/
+
+/*.card .recipe-buttons button {*/
+/*  padding: 10px 20px;*/
+/*  border: none;*/
+/*  border-radius: 5px;*/
+/*  background-color: #6b8e23; !* Zielony kolor dla przycisków *!*/
+/*  color: white;*/
+/*  font-size: 14px;*/
+/*  cursor: pointer;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.card .recipe-buttons button:hover {*/
+/*  background-color: #8b4513; !* Brązowy kolor przycisków na hover *!*/
+/*}*/
+
+/*3*/
+/* Używamy czcionki systemowej, podobnej do Verdany */
+* {
+  font-family: 'Arial', 'Tahoma', sans-serif; /* Arial i Tahoma są podobne do Verdany */
 }
 
-.logo a {
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
+/* Layout Styles */
+.layout {
+  background-color: #f4f4f4; /* Jasny beżowy kolor tła */
+  color: #333; /* Ciemnoszare kolory tekstu dla lepszej czytelności */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+.header {
+  background-color: #6b8e23; /* Zielony */
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 60px;
+}
+
+/*.header .logo {*/
+/*  font-size: 24px;*/
+/*  font-weight: bold;*/
+/*  color: white;*/
+/*  text-transform: uppercase;*/
+/*  letter-spacing: 2px;*/
+/*}*/
 
 .nav {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Odstęp między elementami nawigacji */
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
-.nav a, .login-button, .logout-button { /* Wspólny styl dla linków i przycisków */
-    text-decoration: none;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+.nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s ease;
 }
 
-.nav a:hover, .login-button:hover, .logout-button:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Subtelne tło przy najechaniu */
-}
-
-.login-button, .logout-button {
-    border: 2px solid #ff4500; /* Czerwone obramowanie */
-    background-color: transparent; /* Przezroczyste tło */
+.nav a:hover {
+  color: #ff8c42; /* Złocisty pomarańczowy dla efektu najechania */
 }
 
 .user-menu {
-    display: flex;
-    flex-direction: column; /* Ustawienie elementów w kolumnie */
-    align-items: flex-start; /* Wyrównanie tekstu i przycisków do lewej */
-    color: white;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
 }
 
-.user-menu span {
-    font-weight: bold;
-    color: #ffe4b5; /* Jasny pomarańczowy dla "Witaj, {username}" */
-    margin-bottom: 5px; /* Odstęp między tekstem "Witaj" a przyciskiem */
+.logout-button, .login-button {
+  background-color: #2e8b57; /* Ciemniejszy, bardziej stonowany zielony */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-/* Style of main content */
+.logout-button:hover, .login-button:hover {
+  background-color: #3cb371; /* Jaśniejszy odcień zieleni na hover */
+}
+
 .content {
-    min-height: 70vh;
-    padding: 20px;
-    background-color: #f9f9f9;
+  background-color: white;
+  padding: 40px;
+  flex-grow: 1;
 }
 
-/* Style of bottom bar */
 .footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
+  background-color: #6b8e23;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
 }
 
 .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Odstęp między linkami w stopce */
+  display: flex;
+  gap: 20px;
 }
 
 .footer-links a {
-    text-decoration: none;
-    color: white;
-    font-size: 1rem;
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-    text-decoration: underline;
+  color: #ff8c42; /* Złocisty pomarańczowy dla efektu hover */
+}
+
+footer p {
+  text-align: right;
+}
+
+/* Add a nice card layout for the content area */
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  height: 200px;
+}
+
+.card h2 {
+  color: #333;
+  font-size: 24px;
+  margin-top: 15px;
+}
+
+.card p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.card .recipe-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card .recipe-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #6b8e23; /* Zielony kolor dla przycisków */
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card .recipe-buttons button:hover {
+  background-color: #8b4513; /* Brązowy kolor przycisków na hover */
+}
+
+.logo-img {
+  width: 150px;
+  height: auto;
+  display: block;
+  background: transparent;
 }

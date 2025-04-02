@@ -71,3 +71,5 @@ except admin.sites.NotRegistered:  # If Token is not registered yet, ignore exce
 class CustomTokenAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user']
     list_display = ['key', 'user', 'created']
+
+

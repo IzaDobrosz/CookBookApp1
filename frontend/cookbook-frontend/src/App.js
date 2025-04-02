@@ -16,6 +16,8 @@ import Logout from "./pages/Logout";
 import FavoriteRecipes from "./pages/ListOfFavorites";
 import RecipeSearchModal from "./pages/SearchBar";
 import SearchRecipes from "./pages/SearchRecipes";
+// import AdminStats from "./pages/AdminStats";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
     return (
@@ -65,6 +67,8 @@ const App = () => {
                             <Route path="/logout/" element={<Logout />} />
                             Route for fallback
                             <Route path="*" element={<div>Page not found</div>} />
+                            Route for statistics
+                            <Route path="/statistics/" element={<Dashboard />} />
                         </Routes>
                     </div>
                 </Layout>

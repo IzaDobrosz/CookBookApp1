@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 import json
 from django.conf import settings
+from django.db.models import Avg, Count
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
@@ -62,9 +63,9 @@ class Recipe(models.Model):
 
     name = models.CharField(max_length=255, verbose_name="Name of recipe")
     description = models.TextField(verbose_name="Description of recipe")
-    prep_time = models.IntegerField(verbose_name="Preparation time")  # in minutes
-    total_time = models.IntegerField(verbose_name="Total time")  # in minutes
-    servings = models.IntegerField(verbose_name="Servings")
+    prep_time = models.PositiveIntegerField(verbose_name="Preparation time")  # in minutes
+    total_time = models.PositiveIntegerField(verbose_name="Total time")  # in minutes
+    servings = models.PositiveIntegerField(verbose_name="Servings")
     ingredients = models.TextField(verbose_name="Ingredients")
     tools = models.TextField(verbose_name="Tools needed")
     preparation_steps = models.TextField(verbose_name="Preparation steps")
@@ -76,6 +77,12 @@ class Recipe(models.Model):
     preparation_time = models.CharField(max_length=100, choices=PREPARATION_TIME_CHOICES, verbose_name="Preparation time", default="Medium")
     difficulty_level = models.CharField(max_length=100, choices=DIFFICULTY_LEVEL_CHOICES, verbose_name="Difficulty Level", default="Easy")
 
+    # for statistics
+    views = models.PositiveIntegerField(default=0, verbose_name="Views")
+    ratings_count = models.PositiveIntegerField(default=0, verbose_name="Ratings count")
+    favorite_count = models.PositiveIntegerField(default=0, verbose_name="Favorite count")
+    comment_count = models.PositiveIntegerField(default=0, verbose_name="Comment count")
+
     # Tags for additional flexible classification
     tags = models.ManyToManyField(Tag, related_name='recipes')
 
@@ -85,6 +92,30 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+    def update_statistics(self):
+        """Update recipe statistics"""
+        self.views += 1
+
+        if hasattr(self, 'ratings'):
+
+            self.ratings_count = self.ratings.count()
+
+        else:
+            self.ratings_count = 0
+
+
+        if hasattr(self, 'favorited_by'):
+            self.favorite_count = self.favorited_by.count()
+        else:
+            self.favorite_count = 0
+
+        if hasattr(self, 'favorited_by'):
+            self.favorite_count = self.favorited_by.count()
+        else:
+            self.favorite_count = 0
+
+        self.save()
 
 #
 # # Non-standard validator for JSONField that can be used directly in the model field
@@ -164,3 +195,5 @@ class Rating(models.Model):
 
     class Meta:
         unique_together = ('recipe', 'user')
+
+

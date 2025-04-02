@@ -18,7 +18,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView, get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -30,7 +30,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from rest_framework.viewsets import ModelViewSet
-from django.db.models import Avg, Value
+from django.db.models import Avg, Value, Count
 from django.db.models.functions import Coalesce
 
 from .models import Tag, Recipe, User, RecipeStep, Comment, FavoriteRecipes, Rating
@@ -57,8 +57,9 @@ class RecipeListView(generics.ListCreateAPIView):
     serializer_class = RecipeSerializer
 
 class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.annotate(average_rating=Avg('ratings__rating'))
     serializer_class = RecipeSerializer
+    # popular_recipes = Recipe.objects.annotate(average_rating=Avg('ratings__rating'))
 
 class RecipeStepDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = RecipeStep.objects.all()
@@ -133,6 +134,8 @@ class CommentListCreateView(generics.ListCreateAPIView):
         recipe_id = self.kwargs.get('recipe_id')
         recipe = get_object_or_404(Recipe, id=recipe_id)   # When recipe doesnt exist
         serializer.save(user=self.request.user, recipe=recipe)    # Save the current user who posted the comment
+        recipe.comment_count += 1
+        recipe.save()
 
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -153,6 +156,13 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({'detail': 'Comments can only be edited within 15 minutes after posting.'}, status=403)
         return super().update(request, *args, **kwargs)
 
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        recipe = instance.recipe
+        recipe.comment_count -= 1
+        recipe.save()
+        return super().destroy(request, *args, **kwargs)
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -702,4 +712,35 @@ class RecipeRatingsView(generics.RetrieveAPIView):
         return self.queryset.get(id=self.kwargs["pk"])
 
 
+        return Response({
+            "total_users": total_users,
+            "total_recipes": total_recipes,
+            "recipe_statistics": list(stats),
+        })
 
+
+class GeneralStatisticsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        data = {
+            "total_recipes": Recipe.objects.count(),
+            "total_users": User.objects.count(),
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class PopularRecipesView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        top_rated = Recipe.objects.annotate(avg_rating=Avg('ratings__rating')).order_by('-avg_rating')[:5]
+        most_commented = Recipe.objects.all().order_by('-comment_count')[:5]
+        most_favorited = Recipe.objects.order_by('-favorite_count')[:5]
+
+        data = {
+            "top_rated": RecipeSerializer(top_rated, context={'request': request}, many=True).data,
+            "most_commented": RecipeSerializer(most_commented, context={'request': request}, many=True).data,
+            "most_favorited": RecipeSerializer(most_favorited, context={'request': request}, many=True).data,
+        }
+        return Response(data)

@@ -22,6 +22,7 @@ const Layout = ({ children }) => {
             {/* Upper navigation bar */}
             <header className="header">
                 <div className="logo">
+                    <img src="/images/logo_cookbook1.png" alt="CookBook Logo" className="logo-img"/>
                     {/*<Link to="/landing-page/">CookBook</Link>*/}
                 </div>
                 <nav className="nav">
