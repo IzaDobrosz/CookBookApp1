@@ -1,0 +1,42 @@
+{
+  "layout": {
+    "nav": {
+      "home": "Strona główna",
+      "recipes": "Przepisy",
+      "favorites": "Ulubione",
+      "search": "Szukaj",
+      "login": "Zaloguj się",
+      "logout": "Wyloguj się",
+      "welcome": "Witaj"
+    },
+    "footer": {
+      "about": "O nas",
+      "contact": "Kontakt",
+      "privacy": "Polityka prywatności",
+      "copyright": "CookBook. Wszelkie prawa zastrzeżone."
+    }
+  },
+  "loginPage": {
+    "title": "Logowanie",
+    "username": "Nazwa użytkownika:",
+    "password": "Hasło:",
+    "submit": "Zaloguj się",
+    "error": "Nieprawidłowe dane logowania",
+    "success": "Logowanie powiodło się!"
+  },
+  "logout": {
+    "button": "Wyloguj się",
+    "success": "Wylogowano pomyślnie!",
+    "error": "Coś poszło nie tak"
+  },
+  "landingPage": {
+    "title": "Witaj w CookBook!",
+    "subtitle": "Twoje miejsce na wspaniałe przepisy!",
+    "newestRecipes": "Najnowsze przepisy",
+    "popularRecipes": "Popularne przepisy"
+  },
+  "statistics": {
+    "title": "Odkryj gotowanie",
+    "description": "Mamy ponad {{count}} przepisów czekających na Ciebie!"
+  }
+}

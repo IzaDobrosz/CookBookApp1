@@ -1,0 +1,42 @@
+{
+  "layout": {
+    "nav": {
+      "home": "Startsida",
+      "recipes": "Recept",
+      "favorites": "Favoriter",
+      "search": "Sök",
+      "login": "Logga in",
+      "logout": "Logga ut",
+      "welcome": "Välkommen"
+    },
+    "footer": {
+      "about": "Om oss",
+      "contact": "Kontakt",
+      "privacy": "Integritetspolicy",
+      "copyright": "CookBook. Alla rättigheter förbehållna."
+    }
+  },
+  "loginPage": {
+    "title": "Logga in",
+    "username": "Användarnamn:",
+    "password": "Lösenord:",
+    "submit": "Logga in",
+    "error": "Ogiltiga inloggningsuppgifter",
+    "success": "Inloggningen lyckades!"
+  },
+  "logout": {
+    "button": "Logga ut",
+    "success": "Utloggning lyckades!",
+    "error": "Något gick fel"
+  },
+  "landingPage": {
+    "title": "Välkommen till CookBook!",
+    "subtitle": "Din plats för fantastiska recept!",
+    "newestRecipes": "Nyaste recept",
+    "popularRecipes": "Populära recept"
+  },
+  "statistics": {
+    "title": "Upptäck matlagning",
+    "description": "Vi har över {{count}} recept som väntar på dig!"
+  }
+}

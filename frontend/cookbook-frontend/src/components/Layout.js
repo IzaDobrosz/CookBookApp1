@@ -1,11 +1,14 @@
+import '../i18n/i18n';
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../pages/AuthContext"; // Import AuthContext
 import "./Layout.css";
+import { useTranslation } from 'react-i18next';
 
 const Layout = ({ children }) => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation()
 
 
     const handleLogoutClick = async () => {
@@ -17,6 +20,11 @@ const Layout = ({ children }) => {
         }
     };
 
+    // Change of language
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+
     return (
         <div className="layout">
             {/* Upper navigation bar */}
@@ -26,27 +34,34 @@ const Layout = ({ children }) => {
                     {/*<Link to="/landing-page/">CookBook</Link>*/}
                 </div>
                 <nav className="nav">
-                    <Link to="/landing_page/">Home</Link>
-                    <Link to="/recipes/">Recipes</Link>
-                    <Link to="/favorites/">Favorites</Link>
+                    <Link to="/landing_page/">{t("layout.nav.home")}</Link>
+                    <Link to="/recipes/">{t("layout.nav.recipes")}</Link>
+                    <Link to="/favorites/">{t("layout.nav.favorites")}</Link>
                     {/*<Link to="/login/">Login</Link>*/}
                     {/*<Link to="/logout/">Logout</Link>*/}
-                    <Link to="/recipes/search/">Search</Link>
+                    <Link to="/recipes/search/">{t("layout.nav.search")}</Link>
 
 
                     {/* Dynamic Login/Logout */}
                     {user ? (
                         <div className="user-menu">
-                            <span>Welcome, {user.username}!</span>
+                            <span>{t("layout.nav.welcome")}, {user.username}!</span>
                             <button onClick={handleLogoutClick} className="logout-button">
-                                Logout
+                                {t("layout.nav.logout")}
                             </button>
                         </div>
                     ) : (
                         <button onClick={() => navigate("/login/")} className="login-button">
-                            Login
+                            {t("layout.nav.login")}
                         </button>
                     )}
+
+                    {/*language switch*/}
+                    <div className="language-switch">
+                        <button onClick={() => changeLanguage('pl')}>PL</button>
+                        <button onClick={() => changeLanguage('se')}>SE</button>
+                        <button onClick={() => changeLanguage('en')}>EN</button>
+                    </div>
                 </nav>
             </header>
 
@@ -57,11 +72,11 @@ const Layout = ({ children }) => {
             {/* Bottom navigation bar */}
             <footer className="footer">
                 <div className="footer-links">
-                    <Link to="/about">About</Link>
-                    <Link to="/contact">Contact</Link>
-                    <Link to="/privacy">Privacy Policy</Link>
+                    <Link to="/about">{t("layout.footer.about")}</Link>
+                    <Link to="/contact">{t("layout.footer.contact")}</Link>
+                    <Link to="/privacy">{t("layout.footer.privacy")}</Link>
                 </div>
-                <p>© 2024 CookBook. All rights reserved.</p>
+                <p>© 2024 {t("layout.footer.copyright")}</p>
             </footer>
         </div>
     );
