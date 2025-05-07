@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.reverse import reverse
 from .models import Tag, Recipe, Comment, RecipeStep, FavoriteRecipes, Rating
-
+from parler_rest.serializers import TranslatableModelSerializer
+from parler_rest.fields import TranslatedFieldsField
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -47,13 +48,14 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     #     request = self.context.get('request')  # Get the request context for absolute URL
     #     return reverse('recipe_steps', kwargs={'recipe_id': obj.id}, request=request)
 
-class RecipeStepSerializer(serializers.HyperlinkedModelSerializer):
+class RecipeStepSerializer(TranslatableModelSerializer):
     url = serializers.SerializerMethodField()
     time = serializers.SerializerMethodField()    # Przesyłaj czas w sekundach
+    translations = TranslatedFieldsField(shared_model=RecipeStep)
 
     class Meta:
         model = RecipeStep
-        fields = ['url', 'recipe_id', 'step_number', 'instruction', 'temperature', 'time']
+        fields = ['url', 'recipe_id', 'step_number', 'translations', 'temperature', 'time']
 
     def get_url(self, obj):
         """Generate the URL for the steps of a certain recipe."""

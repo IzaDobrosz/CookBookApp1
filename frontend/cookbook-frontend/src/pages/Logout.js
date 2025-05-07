@@ -1,8 +1,11 @@
+import '../i18n/i18n';
 import React from "react";
 import axios from "axios";
 import "./Logout.css";
+import { useTranslation } from 'react-i18next';
 
 const Logout = () => {
+    const { t, i18n } = useTranslation();
     const handleLogout = async () => {
         const token = localStorage.getItem("token");
         try {
@@ -12,15 +15,15 @@ const Logout = () => {
                 { headers : { Authorization: `Token ${token}`}}
             );
             localStorage.removeItem("token");
-            alert("Logged out successfully!");
+            alert(t("logout.success"));  //"Logged out successfully!"
         } catch (err) {
-            alert("Something went wrong");
+            alert(t("logout.error"));  //"Something went wrong"
         }
     };
 
     return (
         <button onClick={handleLogout} className="logout-button">
-            Logout
+            {t("logout.button")} //Logout
         </button>
     );
 };

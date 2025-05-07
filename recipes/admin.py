@@ -5,8 +5,8 @@ from django.contrib.auth import get_user_model    # to return non standard user 
 from rest_framework.authtoken.models import Token
 from .forms import RecipeStepForm
 from .models import Tag, Recipe, Comment, RecipeStep
-from parler.admin import TranslatableAdmin
-from .models import TranslatableRecipe
+from parler.admin import TranslatableAdmin, TranslatableTabularInline
+
 
 
 @admin.register(Tag)
@@ -14,7 +14,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ['tag_name', 'tag_color']
     search_fields = ['tag_name']
 
-
+#
 # @admin.register(Recipe)
 # class RecipeAdmin(admin.ModelAdmin):
 #     list_display = ['name', 'ingredients', 'prep_time', 'total_time']
@@ -40,14 +40,27 @@ class CommentAdmin(admin.ModelAdmin):
 # class RecipeAdmin(admin.ModelAdmin):
 #     inlines = [RecipeStepInline]
 
-class RecipeStepInline(admin.StackedInline):
+class RecipeStepInline(TranslatableTabularInline):
     model = RecipeStep
     form = RecipeStepForm
     extra = 1    # Number of empty forms shown by default
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(TranslatableAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'description', 'ingredients', 'tools', 'preparation_steps')
+        }),
+        ("Other info", {
+            'fields': ('prep_time', 'total_time', 'servings', 'type_of_dish', 'preparation_method',
+                       'ingredient_type', 'preparation_time', 'difficulty_level', 'tags')
+        }),
+    )
+    list_display = ('name', 'prep_time', 'total_time', 'servings')
     inlines = [RecipeStepInline]
+
+# class RecipeAdmin(admin.ModelAdmin):
+    # inlines = [RecipeStepInline]
     # list_display = ['name', 'ingredients', 'prep_time', 'total_time']
 
 # Get model User
@@ -74,11 +87,17 @@ class CustomTokenAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user']
     list_display = ['key', 'user', 'created']
 
-# to extent model with translations
-admin.site.unregister(Recipe)
+# # to extent model with translations
+# admin.site.unregister(Recipe)
 
-@admin.register(TranslatableRecipe)
-class RecipeAdmin(TranslatableAdmin):
-    inlines = [RecipeStepInline]
+# @admin.register(TranslatableRecipe)
+# class RecipeAdmin(TranslatableAdmin):
+#     fieldsets = (
+#         (None, {
+#             'fields': ('name', 'description', 'ingredients', 'tools', 'preparation_steps')
+#         }),
+#     )
+#     list_display = ('name',)
+#     inlines = [RecipeStepInline]
 
 

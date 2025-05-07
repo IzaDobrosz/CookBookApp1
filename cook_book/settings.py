@@ -28,6 +28,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'parler',
     'recipes',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -102,13 +103,27 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
+# the fallback languages are the same as: [LANGUAGE_CODE]
 LANGUAGE_CODE = 'en-us'
 
 LANGUAGES = [
     ('en', _('English')),
     ('sv', _('Swedish')),
+    ('pl', 'Polish'),
 ]
 
+# Config for admin tabs
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en'},
+        {'code': 'pl'},
+        {'code': 'sv'},
+    ),
+    'default': {
+        'fallbacks': ['en'],
+        'hide_untranslated': False,
+    }
+}
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',  # Directory with translations

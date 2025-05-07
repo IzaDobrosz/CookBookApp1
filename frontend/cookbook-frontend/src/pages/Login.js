@@ -1,8 +1,10 @@
+import '../i18n/i18n';
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../pages/AuthContext"; // Import AuthContext
 import "./Login.css";
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -10,6 +12,7 @@ const Login = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const { setUser } = useContext(AuthContext); // Wyciągamy funkcję setUser z AuthContext
+    const { t, i18n } = useTranslation();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -28,20 +31,20 @@ const Login = () => {
                 id: response.data.id,
             });
 
-            alert("Login successful!");
+            alert(t("loginPage.success"));
             navigate("/landing_page/");
         } catch (err) {
-            setError("Invalid credentials");
+            setError(t("loginPage.error"));
         }
     };
 
     return (
         <div className="login-container">
             <form onSubmit={handleLogin} className="login-form">
-                <h2>Login</h2>
+                <h2>{t("loginPage.title")}</h2>
                 {error && <p className="error-message">{error}</p>}
                 <label>
-                    Username:
+                     {t("loginPage.username")}:
                     <input
                         type="text"
                         value={username}
@@ -50,7 +53,7 @@ const Login = () => {
                     />
                 </label>
                 <label>
-                    Password:
+                     {t("loginPage.password")}:
                     <input
                         type="password"
                         value={password}
@@ -58,7 +61,7 @@ const Login = () => {
                         required
                     />
                 </label>
-                <button type="submit">Login</button>
+                <button type="submit">{t("loginPage.submit")}</button>
             </form>
         </div>
     );

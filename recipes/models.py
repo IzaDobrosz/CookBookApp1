@@ -1,5 +1,5 @@
 from dataclasses import field
-
+from parler.models import TranslatableModel, TranslatedFields
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -7,7 +7,7 @@ import json
 from django.conf import settings
 from django.db.models import Avg, Count
 
-from parler.models import TranslatableModel, TranslatedFields
+
 
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
@@ -20,7 +20,7 @@ class Tag(models.Model):
         return self.tag_name
 
 
-class Recipe(models.Model):
+class Recipe(TranslatableModel):
     TYPE_OF_DISH_CHOICES = [
         ('APPETIZERS', 'Appetizers'),
         ('SOUPS', 'Soups'),
@@ -63,14 +63,18 @@ class Recipe(models.Model):
         ('DIFFICULT', 'Difficult'),
     ]
 
-    name = models.CharField(max_length=255, verbose_name="Name of recipe")
-    description = models.TextField(verbose_name="Description of recipe")
+    translations = TranslatedFields(
+        name=models.CharField(max_length=255, verbose_name="Name of recipe"),
+        description=models.TextField(verbose_name="Description of recipe"),
+        ingredients=models.TextField(verbose_name="Ingredients"),
+        tools=models.TextField(verbose_name="Tools needed"),
+        preparation_steps=models.TextField(verbose_name="Preparation steps"),
+    )
+
     prep_time = models.PositiveIntegerField(verbose_name="Preparation time")  # in minutes
     total_time = models.PositiveIntegerField(verbose_name="Total time")  # in minutes
     servings = models.PositiveIntegerField(verbose_name="Servings")
-    ingredients = models.TextField(verbose_name="Ingredients")
-    tools = models.TextField(verbose_name="Tools needed")
-    preparation_steps = models.TextField(verbose_name="Preparation steps")
+
     created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created on")
     updated_on = models.DateTimeField(auto_now=True, verbose_name="Updated on")
     type_of_dish = models.CharField(max_length=100, choices=TYPE_OF_DISH_CHOICES, verbose_name="Type of dish", default="Main Dishes")
@@ -93,7 +97,7 @@ class Recipe(models.Model):
         ordering = ['created_on']
 
     def __str__(self):
-        return self.name
+        return self.safe_translation_getter('name', any_language=True)
 
     def update_statistics(self):
         """Update recipe statistics"""
@@ -118,19 +122,19 @@ class Recipe(models.Model):
             self.favorite_count = 0
 
         self.save()
-
-# Proxy model with translations
-class TranslatableRecipe(TranslatableModel, Recipe):
-    class Meta:
-        proxy = True
-
-    translations = TranslatedFields(
-        name=models.CharField(max_length=255, verbose_name="Name of recipe"),
-        description=models.TextField(verbose_name="Description of recipe"),
-        ingredients=models.TextField(verbose_name="Ingredients"),
-        tools=models.TextField(verbose_name="Tools needed"),
-        preparation_steps=models.TextField(verbose_name="Preparation steps"),
-    )
+#
+# # Proxy model with translations
+# class TranslatableRecipe(TranslatableModel, Recipe):
+#     class Meta:
+#         proxy = True
+#
+#     translations = TranslatedFields(
+#         # name=models.CharField(max_length=255, verbose_name="Name of recipe"),
+#         # description=models.TextField(verbose_name="Description of recipe"),
+#         # ingredients=models.TextField(verbose_name="Ingredients"),
+#         # tools=models.TextField(verbose_name="Tools needed"),
+#         # preparation_steps=models.TextField(verbose_name="Preparation steps"),
+#     )
 
 #
 # # Non-standard validator for JSONField that can be used directly in the model field
@@ -161,19 +165,22 @@ class TranslatableRecipe(TranslatableModel, Recipe):
 #         if "time" in step and not (step["time"] is None or isinstance(step["time"], int)):
 #             raise ValidationError("Optional 'time' must be an integer or null.")
 
-class RecipeStep(models.Model):
+class RecipeStep(TranslatableModel):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
     step_number = models.PositiveIntegerField(verbose_name="Step number", default=1)
-    instruction = models.TextField(verbose_name="Instruction", default="No instruction provided")
+
     temperature = models.IntegerField(null=True, blank=True, verbose_name="Temperature")
     time = models.DurationField(null=True, blank=True, verbose_name="Time")    # time as timedelta
 
+    translations = TranslatedFields(
+        instruction=models.TextField(verbose_name="Instruction", default="No instruction provided")
+    )
     class Meta:
         ordering = ['step_number']
         unique_together = ('recipe', 'step_number')    # Unique step_number within one recipe
 
     def __str__(self):
-        return f'{self.step_number}: {self.instruction}'
+        return f'{self.step_number}: {self.safe_translation_getter("instruction", any_language=True)}'
 
 
 class Comment(models.Model):
