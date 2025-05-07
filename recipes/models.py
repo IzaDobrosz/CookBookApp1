@@ -7,6 +7,8 @@ import json
 from django.conf import settings
 from django.db.models import Avg, Count
 
+from parler.models import TranslatableModel, TranslatedFields
+
 class Tag(models.Model):
     tag_name = models.CharField(max_length=50, null=True, blank=True)
     tag_color = models.CharField(max_length=10, default="#000000")
@@ -116,6 +118,19 @@ class Recipe(models.Model):
             self.favorite_count = 0
 
         self.save()
+
+# Proxy model with translations
+class TranslatableRecipe(TranslatableModel, Recipe):
+    class Meta:
+        proxy = True
+
+    translations = TranslatedFields(
+        name=models.CharField(max_length=255, verbose_name="Name of recipe"),
+        description=models.TextField(verbose_name="Description of recipe"),
+        ingredients=models.TextField(verbose_name="Ingredients"),
+        tools=models.TextField(verbose_name="Tools needed"),
+        preparation_steps=models.TextField(verbose_name="Preparation steps"),
+    )
 
 #
 # # Non-standard validator for JSONField that can be used directly in the model field
