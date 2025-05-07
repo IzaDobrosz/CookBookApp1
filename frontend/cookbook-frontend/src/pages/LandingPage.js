@@ -1,3 +1,5 @@
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import RecipeDetail from "./RecipeDetail";
@@ -11,7 +13,7 @@ const LandingPage = () => {
     const [popularRecipes, setPopularRecipes] = useState([]);
     const navigate = useNavigate();
     const [stats, setStats] = useState({ total_recipes: 0 });
-
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchLandingPage = async () => {
@@ -31,14 +33,14 @@ const LandingPage = () => {
     return (
         <div className="landing-page">
             <header className="header">
-                <h1>Welcome to CookBook</h1>
-                <p>Your go-to place for amazing recipes!</p>
+                <h1>{t("landingPage.title")}</h1>
+                <p>{t("landingPage.subtitle")}</p>
             </header>
 
             <Statistics stats={stats}/>
 
             <section className="new-recipes">
-                <h2>Newest Recipes</h2>
+                <h2>{t("landingPage.newestRecipes")}</h2>
                 <div className="recipes-grid">
                     {newRecipes.map((recipe) => (
                         <Link
@@ -53,7 +55,7 @@ const LandingPage = () => {
             </section>
 
             <section className="popular-recipes">
-                <h2>Popular Recipes</h2>
+                <h2>{t("landingPage.popularRecipes")}</h2>
                 <div className="recipes-grid">
                     {popularRecipes.map((recipe) => (
                         // <RecipeDetail key={recipe.id} recipe={recipe.name}/>
