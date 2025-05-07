@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model    # to return non standard user 
 from rest_framework.authtoken.models import Token
 from .forms import RecipeStepForm
 from .models import Tag, Recipe, Comment, RecipeStep
+from parler.admin import TranslatableAdmin
+from .models import TranslatableRecipe
 
 
 @admin.register(Tag)
@@ -71,5 +73,12 @@ except admin.sites.NotRegistered:  # If Token is not registered yet, ignore exce
 class CustomTokenAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user']
     list_display = ['key', 'user', 'created']
+
+# to extent model with translations
+admin.site.unregister(Recipe)
+
+@admin.register(TranslatableRecipe)
+class RecipeAdmin(TranslatableAdmin):
+    inlines = [RecipeStepInline]
 
 
