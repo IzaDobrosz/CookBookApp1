@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 
 import en from './en.json';
 import pl from './pl.json';
-import se from './se.json';
+import sv from './sv.json';
 
 i18n
   .use(initReactI18next)
@@ -11,7 +11,7 @@ i18n
     resources: {
       en: { translation: en },
       pl: { translation: pl },
-      se: { translation: se }
+      sv: { translation: sv }
     },
     lng: 'en', // default language
     fallbackLng: 'en',

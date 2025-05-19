@@ -1,5 +1,5 @@
 from ast import Index
-from http.client import responses
+from http.client import responses, HTTPResponse
 from http.cookiejar import logger
 from pydoc import resolve
 from textwrap import wrap
@@ -32,6 +32,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Avg, Value, Count
 from django.db.models.functions import Coalesce
+from googletrans import Translator
+from django.utils.translation import gettext as _
 
 from .models import Tag, Recipe, User, RecipeStep, Comment, FavoriteRecipes, Rating
 from .serializers import TagSerializer, RecipeSerializer, UserSerializer, RecipeStepSerializer, CommentSerializer, \
@@ -143,12 +145,50 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
-    def get_object(self):
+    #previous
+    # def get_object(self):
+    #     comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
+    #
+    #     # Check if user is author of comment
+    #     self.check_object_permissions(self.request, comment)
+    #     return comment
+
+    # retrieve() to serve ?to=xx - tranlsation only when user ask for it
+    def retrieve(self, request, *args, **kwargs):
         comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
 
-        # Check if user is author of comment
-        self.check_object_permissions(self.request, comment)
-        return comment
+    #     For tralnslations
+        target_lang = request.query_params.get('to')
+        if target_lang:
+            if comment.translated_comment and target_lang in comment.translated_comment:
+                translated = comment.translated_comment[target_lang]
+            else:
+                translator = Translator()
+                try:
+                    translation = translator.translate( comment.comment, dest=target_lang, src=comment.language)
+                    translated = translation.text
+                except Exception as e:
+                    return Response({'detail': _('Translation failed'), 'error': str(e)}, status=400)
+
+
+                # SAve to cache
+                if not comment.translated_comment:
+                    comment.translated_comment = {}
+                comment.translated_comment[target_lang] = translated
+                comment.save()
+
+            return Response({
+                'id': comment.id,
+                'original': comment.comment,
+                'translated': translated,
+                'original_language': comment.language,
+                'target_language': target_lang,
+            })
+
+        # If not tranlation request - return standr serializer
+        serializer = self.get_serializer(comment)
+        return Response(serializer.data)
+
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

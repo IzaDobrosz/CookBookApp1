@@ -22,12 +22,16 @@ const Comments = () => {
     const [editingComment, setEditingComment] = useState(null); // Current comment being edited
     const [editContent, setEditContent] = useState(""); // Edit content
     const [commentToDelete, setCommentToDelete] = useState(null); // For delete confirmation
+    const [translatedComments, setTranslatedComments] = useState({});
+    const [showTranslated, setShowTranslated] = useState({});
     const [error, setError] = useState(null);
+
+    const lang = localStorage.getItem('lang') || 'en';
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/recipe/${recipeId}/comments/`);
+                const response = await axios.get(`/api/recipe/${recipeId}/comments/`);
                 const fetchedComments = response.data.comments;
 
                 // Posortowanie komentarzy: pierwszy komentarz autora
@@ -35,9 +39,15 @@ const Comments = () => {
                     if (a.user === parseInt(localStorage.getItem('user_id'))) return -1;
                     if (b.user === parseInt(localStorage.getItem('user_id'))) return 1;
                     return 0;
-                })
+                });
                 setComments(sortedComments);
                 setRecipeName(response.data.recipe_name); // Set recipe name
+
+                if (lang !== 'en') {
+                    for (let comment of fetchedComments) {
+                        fetchTranslation(comment.id);
+                    }
+                }
             } catch (error) {
                 setError('Failed to load comments.');
                 console.error(error);
@@ -45,7 +55,32 @@ const Comments = () => {
         };
 
         fetchComments();
-    }, [recipeId]);
+    }, [recipeId, lang]);
+
+    const fetchTranslation = async (commentId) => {
+        try {
+            const response = await axios.get(
+                `/api/recipe/${recipeId}/comments/${commentId}/?to=${lang}`
+            );
+            setTranslatedComments(prev => ({
+                ...prev,
+                [commentId]: response.data.translated
+            }));
+        } catch (error) {
+            console.error("Translation failed:", error);
+            setTranslatedComments(prev => ({
+                ...prev,
+                [commentId]: "[Translation unavailable]"
+            }));
+        }
+    };
+
+    const handleToggleTranslation = (commentId) => {
+        setShowTranslated(prev => ({
+            ...prev,
+            [commentId]: !prev[commentId]
+        }));
+    };
 
     const handleAddComment = async () => {
         const token = checkToken(setError);
@@ -63,6 +98,9 @@ const Comments = () => {
             );
             setComments([response.data, ...comments]);
             setNewComment('');
+            if (lang !== 'en') {
+                fetchTranslation(response.data.id);
+            }
         } catch (error) {
             console.error('Error adding comment:', error);
             if (error.response) {
@@ -140,7 +178,21 @@ const Comments = () => {
                                     className="edit-comment-textarea"
                                 />
                             ) : (
-                                <p>{comment.comment}</p>
+                                <>
+                                    <p>{comment.comment}</p>
+                                    {translatedComments[comment.id] && (
+                                        <>
+                                            <button onClick={() => handleToggleTranslation(comment.id)}>
+                                                {showTranslated[comment.id] ? 'Hide Translation' : 'Show Translation'}
+                                            </button>
+                                            {showTranslated[comment.id] && (
+                                                <p className="translated-comment">
+                                                    🈯 {translatedComments[comment.id]}
+                                                </p>
+                                            )}
+                                        </>
+                                    )}
+                                </>
                             )}
                             {comment.user_id === parseInt(localStorage.getItem('user_id')) && (
                                 <div className="comment-actions">

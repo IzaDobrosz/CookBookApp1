@@ -1,4 +1,3 @@
-from dataclasses import field
 from parler.models import TranslatableModel, TranslatedFields
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -6,88 +5,90 @@ from django.core.exceptions import ValidationError
 import json
 from django.conf import settings
 from django.db.models import Avg, Count
+from django.utils.translation import gettext_lazy as _
 
 
 
-class Tag(models.Model):
-    tag_name = models.CharField(max_length=50, null=True, blank=True)
+class Tag(TranslatableModel):
+    translations = TranslatedFields(
+        tag_name = models.CharField(max_length=50, null=True, blank=True),
+    )
     tag_color = models.CharField(max_length=10, default="#000000")
 
-    class Meta:
-        ordering = ['tag_name']
+
 
     def __str__(self):
-        return self.tag_name
+        return self.safe_translation_getter('tag_name', any_language=True)
 
 
 class Recipe(TranslatableModel):
     TYPE_OF_DISH_CHOICES = [
-        ('APPETIZERS', 'Appetizers'),
-        ('SOUPS', 'Soups'),
-        ('SALADS', 'Salads'),
-        ('MAIN_DISHES', 'Main Dishes'),
-        ('DESSERTS', 'Desserts'),
-        ('SNACKS', 'Snacks'),
-        ('DRINKS', 'Drinks'),
-        ('BREAD', 'Bread'),
+        ('APPETIZERS', _('Appetizers')),
+        ('SOUPS', _('Soups')),
+        ('SALADS', _('Salads')),
+        ('MAIN_DISHES', _('Main Dishes')),
+        ('DESSERTS', _('Desserts')),
+        ('SNACKS', _('Snacks')),
+        ('DRINKS', _('Drinks')),
+        ('BREAD', _('Bread')),
     ]
     PREPARATION_METHOD_CHOICES = [
-        ('FRYING', 'Frying'),
-        ('BOILING', 'Boiling'),
-        ('GRILLING', 'Grilling'),
-        ('BAKING', 'Baking'),
-        ('STEAMING', 'Steaming'),
-        ('SOUS-VIDE', 'Sous-vide'),
-        ('RAW', 'Raw'),
+        ('FRYING', _('Frying')),
+        ('BOILING', _('Boiling')),
+        ('GRILLING', _('Grilling')),
+        ('BAKING', _('Baking')),
+        ('STEAMING', _('Steaming')),
+        ('SOUS-VIDE', _('Sous-vide')),
+        ('RAW', _('Raw')),
     ]
 
     INGREDIENT_TYPE_CHOICES = [
-        ('VEGETABLE_BASED', 'Vegetable-Based'),
-        ('MEAT_BASED', 'Meat-Based'),
-        ('FISH_BASED', 'Fish-Based'),
-        ('FRUIT_BASED', 'Fruit-Based'),
-        ('SEAFOOD', 'Seafood'),
-        ('DAIRY_BASED', 'Dairy-Based'),
-        ('PASTA_RICE_BASED', 'Pasta/Rice-Based'),
+        ('VEGETABLE_BASED', _('Vegetable-Based')),
+        ('MEAT_BASED', _('Meat-Based')),
+        ('FISH_BASED', _('Fish-Based')),
+        ('FRUIT_BASED', _('Fruit-Based')),
+        ('SEAFOOD', _('Seafood')),
+        ('DAIRY_BASED', _('Dairy-Based')),
+        ('PASTA_RICE_BASED', _('Pasta/Rice-Based')),
     ]
 
     PREPARATION_TIME_CHOICES = [
-        ('QUICK', 'Quick'),
-        ('MEDIUM', 'Medium'),
-        ('TIME_CONSUMING', 'Time-Consuming'),
+        ('QUICK', _('Quick')),
+        ('MEDIUM', _('Medium')),
+        ('TIME_CONSUMING', _('Time-Consuming')),
     ]
 
     DIFFICULTY_LEVEL_CHOICES = [
-        ('EASY', 'Easy'),
-        ('INTERMEDIATE', 'Intermediate'),
-        ('DIFFICULT', 'Difficult'),
+        ('EASY', _('Easy')),
+        ('INTERMEDIATE', _('Intermediate')),
+        ('DIFFICULT', _('Difficult')),
     ]
 
     translations = TranslatedFields(
-        name=models.CharField(max_length=255, verbose_name="Name of recipe"),
-        description=models.TextField(verbose_name="Description of recipe"),
-        ingredients=models.TextField(verbose_name="Ingredients"),
-        tools=models.TextField(verbose_name="Tools needed"),
-        preparation_steps=models.TextField(verbose_name="Preparation steps"),
+        name=models.CharField(max_length=255, verbose_name=_("Name of recipe")),
+        description=models.TextField(verbose_name=_("Description of recipe")),
+        ingredients=models.TextField(verbose_name=_("Ingredients")),
+        tools=models.TextField(verbose_name=_("Tools needed")),
+        preparation_steps=models.TextField(verbose_name=_("Preparation steps")),
     )
 
-    prep_time = models.PositiveIntegerField(verbose_name="Preparation time")  # in minutes
-    total_time = models.PositiveIntegerField(verbose_name="Total time")  # in minutes
-    servings = models.PositiveIntegerField(verbose_name="Servings")
+    prep_time = models.PositiveIntegerField(verbose_name=_("Preparation time"))  # in minutes
+    total_time = models.PositiveIntegerField(verbose_name=_("Total time"))     # in minutes
+    servings = models.PositiveIntegerField(verbose_name=_("Servings"))
 
-    created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created on")
-    updated_on = models.DateTimeField(auto_now=True, verbose_name="Updated on")
-    type_of_dish = models.CharField(max_length=100, choices=TYPE_OF_DISH_CHOICES, verbose_name="Type of dish", default="Main Dishes")
-    preparation_method = models.CharField(max_length=100, choices=PREPARATION_METHOD_CHOICES, verbose_name="Preparation method", default="SOUS-VIDE")
-    ingredient_type = models.CharField(max_length=100, choices=INGREDIENT_TYPE_CHOICES, verbose_name="Ingredient Type", default="MEAT_BASED")
-    preparation_time = models.CharField(max_length=100, choices=PREPARATION_TIME_CHOICES, verbose_name="Preparation time", default="Medium")
-    difficulty_level = models.CharField(max_length=100, choices=DIFFICULTY_LEVEL_CHOICES, verbose_name="Difficulty Level", default="Easy")
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name=_("Created on"))
+    updated_on = models.DateTimeField(auto_now=True, verbose_name=_("Updated on"))
+    type_of_dish = models.CharField(max_length=100, choices=TYPE_OF_DISH_CHOICES, verbose_name=_("Type of dish"), default="Main Dishes")
+    preparation_method = models.CharField(max_length=100, choices=PREPARATION_METHOD_CHOICES, verbose_name=_("Preparation method"), default="SOUS-VIDE")
+    ingredient_type = models.CharField(max_length=100, choices=INGREDIENT_TYPE_CHOICES, verbose_name=_("Ingredient Type"), default="MEAT_BASED")
+    preparation_time = models.CharField(max_length=100, choices=PREPARATION_TIME_CHOICES, verbose_name=_("Preparation time"), default="Medium")
+    difficulty_level = models.CharField(max_length=100, choices=DIFFICULTY_LEVEL_CHOICES, verbose_name=_("Difficulty Level"), default="Easy")
 
     # for statistics
-    views = models.PositiveIntegerField(default=0, verbose_name="Views")
-    ratings_count = models.PositiveIntegerField(default=0, verbose_name="Ratings count")
-    favorite_count = models.PositiveIntegerField(default=0, verbose_name="Favorite count")
-    comment_count = models.PositiveIntegerField(default=0, verbose_name="Comment count")
+    views = models.PositiveIntegerField(default=0, verbose_name=_("Views"))
+    ratings_count = models.PositiveIntegerField(default=0, verbose_name=_("Ratings count"))
+    favorite_count = models.PositiveIntegerField(default=0, verbose_name=_("Favorite count"))
+    comment_count = models.PositiveIntegerField(default=0, verbose_name=_("Comment count"))
 
     # Tags for additional flexible classification
     tags = models.ManyToManyField(Tag, related_name='recipes')
@@ -95,6 +96,8 @@ class Recipe(TranslatableModel):
 
     class Meta:
         ordering = ['created_on']
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
 
     def __str__(self):
         return self.safe_translation_getter('name', any_language=True)
@@ -184,10 +187,27 @@ class RecipeStep(TranslatableModel):
 
 
 class Comment(models.Model):
-    comment = models.TextField(verbose_name="Comment")
-    created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created on")
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.TextField(verbose_name=_("Comment"))
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name=_("Created on"))
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name=_("Recipe"))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User"))
+
+    language = models.CharField(
+        max_length=10,
+        default='en',
+        verbose_name=_("Original Language"),
+        help_text=_("Language code of the original comment (e.g. 'en', 'pl', 'sv').")
+    )
+
+    translated_comment = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name=_("Translated Comment"),
+        help_text=_("Dictionary with translated versions of the comment. Example: {'en': '...', 'de': '...'}")
+    )
+
+    def __str__(self):
+        return f"{self.user} - {self.comment[:30]}"
 
 # Extension of User model to serve "favorites"
 class User(AbstractUser):

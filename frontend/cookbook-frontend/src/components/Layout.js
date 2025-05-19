@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../pages/AuthContext"; // Import AuthContext
 import "./Layout.css";
 import { useTranslation } from 'react-i18next';
+import { updateLanguageHeader } from "./axiosConfig";
 
 const Layout = ({ children }) => {
     const { user, logout } = useContext(AuthContext);
@@ -21,8 +22,9 @@ const Layout = ({ children }) => {
     };
 
     // Change of language
-    const changeLanguage = (lng) => {
-        i18n.changeLanguage(lng);
+    const changeLanguage = (lang) => {
+        i18n.changeLanguage(lang);      // changein i18next
+        updateLanguageHeader(lang);     // update axios + localStorage
     };
 
     return (
@@ -58,9 +60,9 @@ const Layout = ({ children }) => {
 
                     {/*language switch*/}
                     <div className="language-switch">
-                        <button onClick={() => changeLanguage('pl')}>PL</button>
-                        <button onClick={() => changeLanguage('se')}>SE</button>
-                        <button onClick={() => changeLanguage('en')}>EN</button>
+                        <button onClick={() => changeLanguage('pl')}>🇵🇱 PL</button>
+                        <button onClick={() => changeLanguage('sv')}>🇸🇪 SE</button>
+                        <button onClick={() => changeLanguage('en')}>🇬🇧 EN</button>
                     </div>
                 </nav>
             </header>

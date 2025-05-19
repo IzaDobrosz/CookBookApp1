@@ -4,11 +4,17 @@ from rest_framework.reverse import reverse
 from .models import Tag, Recipe, Comment, RecipeStep, FavoriteRecipes, Rating
 from parler_rest.serializers import TranslatableModelSerializer
 from parler_rest.fields import TranslatedFieldsField
+from googletrans import Translator
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
+    tag_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Tag
-        fields = ['url', 'id', 'tag_name', 'tag_color']
+        fields = ['id', 'url', 'tag_name', 'tag_color']
+
+    def get_tag_name(self, obj):
+        return obj.safe_translation_getter('tag_name')
 
 
 class RecipeSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,10 +78,48 @@ class RecipeStepSerializer(TranslatableModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source='user.id', read_only=True)
+    translated = serializers.SerializerMethodField()
+    original_language = serializers.CharField(source='language', read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['id', 'recipe', 'user', 'user_id', 'comment', 'created_on']
-        read_only_fields = ['user', 'user_id', 'created_on', 'recipe']
+        fields = ['id', 'recipe', 'user', 'user_id', 'comment', 'created_on', 'translated', 'original_language']
+        read_only_fields = ['user', 'user_id', 'created_on', 'recipe', 'translated', 'original_language']
+
+
+    def get_translated(self, obj):
+        """
+       Returns translated comment if 'request' includes ?to=<language_code>,
+       otherwise returns None. Checks for cached version in translated_comment.
+       """
+        request = self.context.get('request')
+        if not request:
+            return None
+
+        target_lang = request.query_params.get('to')
+        if not target_lang or target_lang == obj.language:
+            return None # Don't translate if no language requested or same as original
+
+
+        # Check if already translated
+        if obj.translated_comment and target_lang in obj.translated_comment:
+            return obj.translated_comment[target_lang]
+
+        # If not, translate using googletrans
+        try:
+            translator = Translator()
+            translation = translator.translate(comment.comment, dest=target_lang, src=comment.language)
+            translated = translation.text
+
+            # Cache it in the model
+            if not obj.translated_comment:
+                obj.translated_comment = {}
+            obj.translated_comment[target_lang] = translated
+            obj.save()
+
+            return translated
+        except Exception as e:
+            return None  # Fallback: don't crash on error
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

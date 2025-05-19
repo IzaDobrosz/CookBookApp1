@@ -10,10 +10,21 @@ from parler.admin import TranslatableAdmin, TranslatableTabularInline
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = ['tag_name', 'tag_color']
-    search_fields = ['tag_name']
+class TagAdmin(TranslatableAdmin):
+    list_display = ['tag_name_display', 'tag_color']
+    search_fields = ['translations__tag_name']
+    ordering = ['translations__tag_name']
 
+    def get_queryset(self, request):
+        # Get language from HTTP header from front
+        lang = request.headers.get('SelectedLanguage') or 'en'
+        return super().get_queryset(request).language(lang)
+
+    def tag_name_display(self, obj):
+        return obj.safe_translation_getter('tag_name', any_language=True)
+
+    tag_name_display.short_description = 'Tag name'
+    tag_name_display.admin_order_field = 'translations__tag_name'
 #
 # @admin.register(Recipe)
 # class RecipeAdmin(admin.ModelAdmin):
