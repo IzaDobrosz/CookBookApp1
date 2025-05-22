@@ -1,4 +1,5 @@
 // RecipePDFButton.js
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -7,6 +8,7 @@ import axios from "axios";
 export const RecipePDFButton = () => {
     const { id } = useParams();
     const [error, setError] = useState(null);
+    const { t } = useTranslation();
     // const handleRecipePDFAction = (download = false) => {
     //     if (id) {
     //         const action = download ? `?download=true` : "";
@@ -19,7 +21,7 @@ export const RecipePDFButton = () => {
     const handleRecipePDFAction = async (download = false) => {
         const token = localStorage.getItem("token");
         if (!token) {
-            setError("You need to login to generate PDF.");
+            setError(("recipePDF.login_required"));
             return;
         }
         if (id) {
@@ -51,18 +53,18 @@ export const RecipePDFButton = () => {
                 URL.revokeObjectURL(fileURL);
             } catch (error) {
                 console.error("Failed to fetch the PDF:", error);
-                setError("Failed to fetch the PDF. Please try again.");
+                setError(t("recipePDF.fetch_error"));
             }
         } else {
             console.error("Recipe ID is undefined");
-            setError("Recipe ID is undefined.");
+            setError(t("recipePDF.id_missing"));
         }
     };
 
     return (
         <div>
-            <button onClick={() => handleRecipePDFAction(false)}>View Recipe PDF</button>
-            <button onClick={() => handleRecipePDFAction(true)}>Download Recipe PDF</button>
+            <button onClick={() => handleRecipePDFAction(false)}>{t("recipePDF.view")}</button>
+            <button onClick={() => handleRecipePDFAction(true)}>{t("recipePDF.download")}</button>
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );

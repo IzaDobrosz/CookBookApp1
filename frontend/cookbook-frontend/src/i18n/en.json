@@ -38,5 +38,109 @@
   "statistics": {
     "title": "Discover Cooking",
     "description": "We have over {{count}} recipes waiting for you!"
+  },
+  "recipeList": {
+    "recipes": "Recipes"
+  },
+  "recipeDetail": {
+    "general": {
+      "loading": "Loading ..."
+    },
+    "errors": {
+      "recipe_id_missing": "Recipe ID not found in URL.",
+      "load_recipe_failed": "Failed to load recipe"
+    },
+    "alerts": {
+      "login_to_save": "You must be logged in to save notes.",
+      "notes_saved": "Notes saved successfully!",
+      "notes_failed": "Failed to save notes."
+    },
+    "recipe": {
+      "prep_time": "Prep Time",
+      "total_time": "Total Time",
+      "servings": "Servings",
+      "tools": "Tools",
+      "ingredients": "Ingredients",
+      "instructions": "Instructions",
+      "details_prompt": "Press below to see details",
+      "start_cooking": "Start Cooking",
+      "notes": "Your notes",
+      "notes_placeholder": "Add your notes here ...",
+      "save_notes": "Save Notes",
+      "created_on": "Created On",
+      "updated_on": "Updated On",
+      "tags": "Tags",
+      "no_tags": "No tags available",
+      "comments": "View and Manage Comments"
+    }
+  },
+  "rateRecipe": {
+    "login_message": "Please log in to rate the recipe.",
+    "success_message": "Rating saved!",
+    "failure_message": "Your rating was not saved.",
+    "heading": "Rate recipe",
+    "average_rating": "Average rating: {{rating}} ⭐ ({{rating}}/5)",
+    "no_ratings": "Average rating: No ratings yet."
+  },
+  "recipeStep": {
+    "loading": "Loading step...",
+    "error": "Error loading recipe steps",
+    "step_header": "Step {{current}} out of {{total}}",
+    "temperature": "Temperature: {{temp}} °C.",
+    "time": "Time: {{time}} min.",
+    "start_timer": "Start Timer",
+    "pause_timer": "Pause",
+    "resume_timer": "Resume",
+    "reset_timer": "Reset Timer",
+    "previous": "Previous",
+    "next": "Next",
+    "finish": "Finish",
+    "end_popup_title": "Congratulations!",
+    "end_popup_message": "You've completed the recipe. Enjoy your meal!",
+    "timer_popup_title": "Time's up!",
+    "timer_popup_message": "The timer for this step has finished."
+  },
+  "recipePDF": {
+    "view": "View Recipe PDF",
+    "download": "Download Recipe PDF",
+    "login_required": "You need to login to generate PDF.",
+    "fetch_error": "Failed to fetch the PDF. Please try again.",
+    "id_missing": "Recipe ID is undefined."
+  },
+  "favorite": {
+    "add": "Add to Favorites",
+    "remove": "Remove from Favorites",
+    "added": "Added to favorites.",
+    "removed": "Removed from favorites.",
+    "error": "Error",
+    "login_required": "You need to login to add to favorites."
+  },
+  "dashboard": {
+    "statsTitle": "📊 Statistics",
+    "totalRecipes": "📌 Total Recipes",
+    "totalUsers": "👥 Total Users",
+    "loadingStats": "Loading statistics...",
+    "popularTitle": "🔥 Most Popular Recipes",
+    "highestRated": "⭐ Highest Rated",
+    "mostCommented": "💬 Most Commented",
+    "mostFavorited": "❤️ Most Favorited",
+    "loadingPopular": "Loading popular recipes..."
+  },
+  "favorites": {
+    "loginRequired": "You need to log in to view your favorites.",
+    "fetchError": "Failed to fetch favorite recipes.",
+    "title": "Your Favorite Recipes",
+    "viewButton": "View Recipe",
+    "noRecipes": "You have no favorite recipes yet."
+  },
+  "notes": {
+    "title": "Your Notes",
+    "placeholder": "Add your notes here...",
+    "saveButton": "Save Notes",
+    "loginToFetch": "User not logged in, cannot fetch notes.",
+    "loginToSave": "You need to login to save notes.",
+    "fetchError": "Failed to load notes.",
+    "saveSuccess": "Notes updated successfully.",
+    "saveError": "Error: {{error}}"
   }
 }

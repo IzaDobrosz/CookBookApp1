@@ -38,5 +38,109 @@
   "statistics": {
     "title": "Upptäck matlagning",
     "description": "Vi har över {{count}} recept som väntar på dig!"
+  },
+  "recipeList": {
+    "recipes": "Recept"
+  },
+  "recipeDetail": {
+    "general": {
+      "loading": "Laddar ..."
+    },
+    "errors": {
+      "recipe_id_missing": "Recept-ID saknas i URL.",
+      "load_recipe_failed": "Misslyckades med att ladda receptet"
+    },
+    "alerts": {
+      "login_to_save": "Du måste vara inloggad för att spara anteckningar.",
+      "notes_saved": "Anteckningar sparade!",
+      "notes_failed": "Det gick inte att spara anteckningar."
+    },
+    "recipe": {
+      "prep_time": "Förberedelsetid",
+      "total_time": "Total tid",
+      "servings": "Portioner",
+      "tools": "Verktyg",
+      "ingredients": "Ingredienser",
+      "instructions": "Instruktioner",
+      "details_prompt": "Tryck nedan för att se detaljer",
+      "start_cooking": "Börja laga mat",
+      "notes": "Dina anteckningar",
+      "notes_placeholder": "Lägg till dina anteckningar här ...",
+      "save_notes": "Spara anteckningar",
+      "created_on": "Skapad",
+      "updated_on": "Uppdaterad",
+      "tags": "Taggar",
+      "no_tags": "Inga taggar tillgängliga",
+      "comments": "Visa och hantera kommentarer"
+    }
+  },
+  "rateRecipe": {
+    "login_message": "Logga in för att betygsätta receptet.",
+    "success_message": "Betyg sparat!",
+    "failure_message": "Ditt betyg kunde inte sparas.",
+    "heading": "Betygsätt recept",
+    "average_rating": "Genomsnittligt betyg: {{rating}} ⭐ ({{rating}}/5)",
+    "no_ratings": "Genomsnittligt betyg: Inga betyg ännu."
+  },
+  "recipeStep": {
+    "loading": "Laddar steg...",
+    "error": "Fel vid inläsning av receptsteg",
+    "step_header": "Steg {{current}} av {{total}}",
+    "temperature": "Temperatur: {{temp}} °C",
+    "time": "Tid: {{time}} min",
+    "start_timer": "Starta Timer",
+    "pause_timer": "Paus",
+    "resume_timer": "Fortsätt",
+    "reset_timer": "Återställ Timer",
+    "previous": "Föregående",
+    "next": "Nästa",
+    "finish": "Avsluta",
+    "end_popup_title": "Grattis!",
+    "end_popup_message": "Du har slutfört receptet. Smaklig måltid!",
+    "timer_popup_title": "Tiden är slut!",
+    "timer_popup_message": "Tiden för detta steg är slut."
+  },
+  "recipePDF": {
+    "view": "Visa recept i PDF",
+    "download": "Ladda ner recept i PDF",
+    "login_required": "Du måste logga in för att skapa en PDF.",
+    "fetch_error": "Kunde inte hämta PDF. Försök igen.",
+    "id_missing": "Recept-ID är inte angivet."
+  },
+  "favorite": {
+    "add": "Lägg till i favoriter",
+    "remove": "Ta bort från favoriter",
+    "added": "Lades till i favoriter.",
+    "removed": "Togs bort från favoriter.",
+    "error": "Fel",
+    "login_required": "Du måste logga in för att lägga till i favoriter."
+  },
+  "dashboard": {
+    "statsTitle": "📊 Statistik",
+    "totalRecipes": "📌 Totalt antal recept",
+    "totalUsers": "👥 Totalt antal användare",
+    "loadingStats": "Laddar statistik...",
+    "popularTitle": "🔥 Mest populära recept",
+    "highestRated": "⭐ Högst betygsatta",
+    "mostCommented": "💬 Mest kommenterade",
+    "mostFavorited": "❤️ Mest favoritmarkerade",
+    "loadingPopular": "Laddar populära recept..."
+  },
+  "favorites": {
+    "loginRequired": "Du måste logga in för att se dina favoriter.",
+    "fetchError": "Det gick inte att hämta favoritrecepterna.",
+    "title": "Dina Favoritrecept",
+    "viewButton": "Visa recept",
+    "noRecipes": "Du har inga favoritrecepter ännu."
+  },
+  "notes": {
+    "title": "Dina anteckningar",
+    "placeholder": "Lägg till dina anteckningar här...",
+    "saveButton": "Spara anteckningar",
+    "loginToFetch": "Användaren är inte inloggad, kan inte hämta anteckningar.",
+    "loginToSave": "Du måste logga in för att spara anteckningar.",
+    "fetchError": "Det gick inte att ladda anteckningar.",
+    "saveSuccess": "Anteckningarna har uppdaterats.",
+    "saveError": "Fel: {{error}}"
   }
 }

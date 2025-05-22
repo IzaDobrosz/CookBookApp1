@@ -1,15 +1,16 @@
 import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../pages/AuthContext"; // Import AuthContext
 import "./Layout.css";
-import { useTranslation } from 'react-i18next';
-import { updateLanguageHeader } from "./axiosConfig";
+import { LanguageContext } from '../contexts/LanguageContext';
 
 const Layout = ({ children }) => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { t, i18n } = useTranslation()
+    const { t, i18n } = useTranslation();
+    const { changeLanguage } = useContext(LanguageContext);
 
 
     const handleLogoutClick = async () => {
@@ -21,11 +22,11 @@ const Layout = ({ children }) => {
         }
     };
 
-    // Change of language
-    const changeLanguage = (lang) => {
-        i18n.changeLanguage(lang);      // changein i18next
-        updateLanguageHeader(lang);     // update axios + localStorage
-    };
+    // // Change of language
+    // const changeLanguage = (lang) => {
+    //     i18n.changeLanguage(lang);      // changein i18next
+    //     updateLanguageHeader(lang);     // update axios + localStorage
+    // };
 
     return (
         <div className="layout">

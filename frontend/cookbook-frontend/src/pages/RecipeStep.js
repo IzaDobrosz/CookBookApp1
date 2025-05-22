@@ -1,3 +1,5 @@
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -17,12 +19,13 @@ const RecipeStep = () => {
     const [timerStatus, setTimerStatus] = useState("stopped"); // State for timer status
     const [timeElapsed, setTimeElapsed] = useState(0); // Time elapsed for display
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchRecipeSteps = async () => {
             try {
                 // Fetch all steps for the recipe
-                const response = await axios.get(`http://127.0.0.1:8000/api/recipe/${recipeId}/steps/`);
+                const response = await axios.get(`/api/recipe/${recipeId}/steps/`);
                 const steps = response.data.results;
                 setRecipeSteps(steps);
 
@@ -33,13 +36,13 @@ const RecipeStep = () => {
                 // Set the current step
                 setCurrentStep(step);
             } catch (err) {
-                setError('Error loading recipe steps');
+                setError(t("recipeStep.error"));
                 console.error(err);
             }
         };
 
         fetchRecipeSteps();
-    }, [recipeId, stepNumber]);
+    }, [recipeId, stepNumber, i18n.language]);
 
     // Initialize timer if step has time
     useEffect(() => {
@@ -99,7 +102,7 @@ const RecipeStep = () => {
     }
 
     if (!currentStep) {
-        return <p>Loading step...</p>;
+        return <p>{t("recipeStep.loading")}</p>;
     }
 
     // Calculate steps progress as %
@@ -131,7 +134,9 @@ const RecipeStep = () => {
     return (
         <div className="recipe-step-container">
             <div className="step-tracker">
-                <h2>Step {currentStep.step_number} out of {recipeSteps.length}</h2>
+                {/*<h2>Step {currentStep.step_number} out of {recipeSteps.length}</h2>*/}
+                <h2>{t("recipeStep.step_header", { current: currentStep.step_number, total: recipeSteps.length })}</h2>
+
             </div>
             {/* Progress bar */}
             <div className="progress-bar-container">
@@ -143,27 +148,31 @@ const RecipeStep = () => {
                 {currentStep.temperature && (
                     <p className="temperature">
                         <img src={thermometerIcon} alt="Thermometer" />
-                        Temperature: {currentStep.temperature} °C
+                        {t("recipeStep.temperature", { temp: currentStep.temperature })}
                     </p>
                 )}
                 {currentStep.time && (
                     <div>
                         <p className="time">
                             <img src={clockIcon} alt="Clock" />
-                            Time: {currentStep.time} min
+                            {t("recipeStep.time", { time: currentStep.time })}
                         </p>
                         <button
                             className="start-timer-button"
                             onClick={startPauseTimer}
                             >
-                        {timerStatus === "running" ? "Pause" : timerStatus === "paused" ? "Resume" : "Start Timer"}
+                        {timerStatus === "running"
+                            ? t("recipeStep.pause_timer")
+                            : timerStatus === "paused"
+                            ? t("recipeStep.resume_timer")
+                            : t("recipeStep.start_timer")}
                         </button>
                         {timerStatus !== "stopped" && (
                             <button
                                 className="reset-timer-button"
                                 onClick={resetTimer}
                                 >
-                                Reset Timer
+                                {t("recipeStep.reset_timer")}
                             </button>
                         )}
                     </div>
@@ -187,10 +196,10 @@ const RecipeStep = () => {
 
             <div className="navigation-buttons">
                 <button onClick={handlePreviousStep} disabled={parseInt(stepNumber, 10) === 1}>
-                    Previous
+                    {t("recipeStep.previous")}
                 </button>
                 <button onClick={handleNextStep}>
-                    {parseInt(stepNumber, 10) === recipeSteps.length ? "Finish" : "Next"}
+                    {parseInt(stepNumber, 10) === recipeSteps.length ? t("recipeStep.finish") : t("recipeStep.next")}
                 </button>
             </div>
 
@@ -198,8 +207,8 @@ const RecipeStep = () => {
             {showEndPopup && (
                 <div className="po pup">
                     <div className="popup-content">
-                        <h2>Congratulations!</h2>
-                        <p>You've completed the recipe. Enjoy your meal!</p>
+                        <h2>{t("recipeStep.end_popup_title")}</h2>
+                        <p>{t("recipeStep.end_popup_message")}</p>
                     </div>
                 </div>
             )}
@@ -207,8 +216,8 @@ const RecipeStep = () => {
             {showTimerPopup && (
                 <div className="popup">
                     <div className="popup-content">
-                        <h2>Time's up!</h2>
-                        <p>The timer for this step has finished.</p>
+                        <h2>{t("recipeStep.timer_popup_title")}</h2>
+                        <p>{t("recipeStep.timer_popup_message")}</p>
                     </div>
                 </div>
             )}

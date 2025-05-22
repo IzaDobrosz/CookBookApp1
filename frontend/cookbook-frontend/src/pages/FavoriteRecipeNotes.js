@@ -1,15 +1,18 @@
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const FavoriteRecipeNotes = ({ recipeId }) => {
     const [notes, setNotes] = useState("");
     const [message, setMessage] = useState("");
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchNotes = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                setMessage("User not logged in, cannot fetch notes.");
+                setMessage(t("notes.loginToFetch"));
                 return;
             }
 
@@ -20,7 +23,7 @@ const FavoriteRecipeNotes = ({ recipeId }) => {
                 setNotes(response.data.notes || "");
             } catch (error) {
                 console.error("Error fetching notes:", error.response?.data || error.message);
-                setMessage("Failed to load notes.");
+                setMessage(t("notes.fetchError"));
             }
         };
 
@@ -30,7 +33,7 @@ const FavoriteRecipeNotes = ({ recipeId }) => {
     const handleNotesSave = async () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            setMessage("You need to login to save notes.");
+            setMessage(t("notes.loginToSave"));
             return;
         }
 
@@ -42,23 +45,23 @@ const FavoriteRecipeNotes = ({ recipeId }) => {
                     headers: { Authorization: `Token ${token}` },
                 }
             );
-            setMessage("Notes updated successfully.");
+            setMessage(t("notes.saveSuccess"));
         } catch (error) {
-            setMessage("Error: " + (error.response?.data?.message || error.message));
+            setMessage(t("notes.saveError", { error: error.response?.data?.message || error.message }));
         }
     };
 
     return (
         <div className="notes-section">
-            <h2 className="section-title">Your Notes</h2>
+            <h2 className="section-title">{t("notes.title")}</h2>
             <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Add your notes here..."
+                placeholder={t("notes.placeholder")}
                 className="notes-textarea"
             />
             <button onClick={handleNotesSave} className="save-notes-btn">
-                Save Notes
+                {t("notes.saveButton")}
             </button>
             {message && <p className="notes-message">{message}</p>}
         </div>

@@ -1,12 +1,16 @@
 // src/RecipeList.js
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';  //Enabling redirection to details
 import './RecipeList.css';
 
 const RecipeList = () => {
-  const [recipes, setRecipes] = useState([]);  // State to store recipes list
-  const [error, setError] = useState(null);     // State to store errors
+    const [recipes, setRecipes] = useState([]);  // State to store recipes list
+    const [error, setError] = useState(null);     // State to store errors
+    const { t, i18n } = useTranslation();
+
 
   useEffect(() => {
       const fetchRecipes = async () => {
@@ -27,12 +31,12 @@ const RecipeList = () => {
   };
 
   fetchRecipes();
-}, []);
+}, [i18n.language]);
 
 
   return (
     <div className="recipe-list-container">
-      <h1 className="recipe-list-title">Recipes</h1>
+      <h1 className="recipe-list-title">{t("recipeList.recipes")}</h1>
       {error && <p className="error-message">{error}</p>}
       <ul className="recipe-list">
         {recipes.map(recipe => (

@@ -1,4 +1,6 @@
 // src/RecipeDetail.js
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom'; // Access to the URL params
@@ -16,10 +18,11 @@ const RecipeDetail = () => {
     const [error, setError] = useState(null);     // State to store errors
     const [notes, setNotes] = useState(''); // State to manage notes
     const [isFavorite, setIsFavorite] = useState(false); // State to check if the recipe is a favorite
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         if (!params.id) { // Sprawdza, czy 'id' jest obecne w URL
-        setError('Recipe ID not found in URL.');
+        setError(t('recipeDetail.errors.recipe_id_missing'));
         return;
         }
 
@@ -30,7 +33,7 @@ const RecipeDetail = () => {
                 console.log(response.data, response.data)
                 setRecipe(response.data);
             } catch (error) {
-                setError('Failed to load recipe');
+                setError(t('recipeDetail.errors.load_recipe_failed'));
                 console.error(error);
             }
         };
@@ -65,12 +68,12 @@ const RecipeDetail = () => {
 
         fetchRecipe();
         fetchFavoriteDetails();
-    }, [params.id]);
+    }, [params.id, i18n.language]);
 
     const handleSaveNotes = async () => {
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('You must be logged in to save notes.');
+            alert(t('recipeDetail.alerts.login_to_save.'));
             return;
         }
 
@@ -78,10 +81,10 @@ const RecipeDetail = () => {
             await axios.post(`/api/notes/${params.id}/`, { notes }, {
                 headers: { Authorization: `Token ${token}` },
             });
-            alert('Notes saved successfully!');
+            alert(t('recipeDetail.alerts.notes_saved'));
         } catch (error) {
             console.error('Failed to save notes:', error);
-            alert('Failed to save notes.');
+            alert(t('recipeDetail.alerts.notes_failed'));
         }
     };
 
@@ -90,7 +93,7 @@ const RecipeDetail = () => {
     }
 
     if (!recipe) {
-        return <p>Loading ...</p>;
+        return <p>{t('recipeDetail.general.loading')}</p>;
     }
     // Function to serve "Start cooking button"
     const handleStartCooking = () => {
@@ -123,25 +126,25 @@ const RecipeDetail = () => {
             <div className="recipe-info-bar">
                 <div className="recipe-info-item">
                     <ClockIcon className="icon-small" />
-                    <span><strong>Prep Time:</strong> {recipe.prep_time} min</span>
+                    <span><strong>{t('recipeDetail.recipe.prep_time')}:</strong> {recipe.prep_time} min</span>
                 </div>
                 <div className="recipe-info-item">
                     <ClockIcon className="icon-small" />
-                    <span><strong>Total Time:</strong> {recipe.total_time} min</span>
+                    <span><strong>{t('recipeDetail.recipe.total_time')}:</strong> {recipe.total_time} min</span>
                 </div>
                 <div className="recipe-info-item">
                     <UserGroupIcon className="icon-small" />
-                    <span><strong>Servings:</strong> {recipe.servings}</span>
+                    <span><strong>{t('recipeDetail.recipe.servings')}:</strong> {recipe.servings}</span>
                 </div>
                 <div className="recipe-info-item">
                     <WrenchScrewdriverIcon className="icon-small" />
-                    <span><strong>Tools:</strong> {recipe.tools}</span>
+                    <span><strong>{t('recipeDetail.recipe.tools')}:</strong> {recipe.tools}</span>
                 </div>
             </div>
 
             {/* Ingredients */}
             <div className="ingredients-section">
-                <h2 className="section-title">Ingredients</h2>
+                <h2 className="section-title">{t('recipeDetail.recipe.ingredients')}</h2>
                 <ul className="ingredients-list">
                     {recipe.ingredients.split(',').map((ingredient, index) => (
                         <li key={index} className="ingredient-item">
@@ -151,7 +154,7 @@ const RecipeDetail = () => {
                 </ul>
             </div>
 
-            <h2 className="section-title">Instructions</h2>
+            <h2 className="section-title">{t('recipeDetail.recipe.instructions')}</h2>
             <ol className="list-decimal">
                 {recipe.preparation_steps.split('.').map((step, index) => (
                     <li key={index}>{step.trim()}</li>
@@ -160,29 +163,29 @@ const RecipeDetail = () => {
 
             {/*button to redirect*/}
             <div className="instructions-section">
-                <h2 className="section-title">Press below to see details</h2>
+                <h2 className="section-title">{t('recipeDetail.recipe.details_prompt')}</h2>
                 {/*<ol className="list-decimal">*/}
                 {/*    {recipeStep.map((step, index) => (*/}
                 {/*        <li key={index}>{step.instruction}</li>*/}
                 {/*    ))}*/}
                 {/*</ol>*/}
                 <button className="start-cooking-btn" onClick={handleStartCooking}>
-                    Start Cooking
+                    {t('recipeDetail.recipe.start_cooking')}
                 </button>
             </div>
 
             {/* Dynamic Notes Section */}
             {isFavorite && (
                 <div className="notes-section">
-                    <h2 className="section-title">Your notes</h2>
+                    <h2 className="section-title">{t('recipeDetail.recipe.notes')}</h2>
                     <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Add your notes here ..."
+                        placeholder={t('recipeDetail.recipe.notes_placeholder')}
                         className="notes-textarea"
                     />
                     <button onClick={handleSaveNotes} className="save-notes-btn">
-                        Save Notes
+                        {t('recipeDetail.recipe.save_notes')}
                     </button>
                 </div>
             )}
@@ -198,15 +201,15 @@ const RecipeDetail = () => {
 
             <div className="dates-bar">
                 <div className="recipe-info-item">
-                    <span><strong>Created On:</strong> {new Date(recipe.created_on).toLocaleDateString()}</span>
+                    <span><strong>{t('recipeDetail.recipe.created_on')}:</strong> {new Date(recipe.created_on).toLocaleDateString()}</span>
                 </div>
                 <div className="recipe-info-item">
-                    <span><strong>Updated On:</strong> {new Date(recipe.updated_on).toLocaleDateString()}</span>
+                    <span><strong>{t('recipeDetail.recipe.updated_on')}:</strong> {new Date(recipe.updated_on).toLocaleDateString()}</span>
                 </div>
             </div>
 
             <div className="tags-section">
-                <strong>Tags:</strong>
+                <strong>{t('recipeDetail.recipe.tags')}:</strong>
                 <div className="recipe-tags">
                     {recipe.tags && recipe.tags.length > 0 ? (
                         recipe.tags.map(tag => (
@@ -219,13 +222,13 @@ const RecipeDetail = () => {
             </span>
                         ))
                     ) : (
-                        <p>No tags available</p>
+                        <p>{t('recipeDetail.recipe.no_tags')}</p>
                     )}
                 </div>
             </div>
 
             <button onClick={() => navigate(`/recipe/${params.id}/comments/`)} className="comments-button">
-                View and Manage Comments
+                {t('recipeDetail.recipe.comments')}
             </button>
         </div>
     );

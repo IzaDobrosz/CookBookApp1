@@ -13,7 +13,7 @@ const LandingPage = () => {
     const [popularRecipes, setPopularRecipes] = useState([]);
     const navigate = useNavigate();
     const [stats, setStats] = useState({ total_recipes: 0 });
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchLandingPage = async () => {
@@ -28,7 +28,7 @@ const LandingPage = () => {
         };
 
         fetchLandingPage();
-    }, []);
+    }, [i18n.language]);
 
     return (
         <div className="landing-page">

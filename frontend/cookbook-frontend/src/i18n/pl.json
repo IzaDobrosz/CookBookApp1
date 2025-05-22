@@ -38,5 +38,109 @@
   "statistics": {
     "title": "Odkryj gotowanie",
     "description": "Mamy ponad {{count}} przepisów czekających na Ciebie!"
+  },
+  "recipeList": {
+    "recipes": "Przepisy"
+  },
+  "recipeDetail": {
+    "general": {
+      "loading": "Ładowanie ..."
+    },
+    "errors": {
+      "recipe_id_missing": "Brak ID przepisu w adresie URL.",
+      "load_recipe_failed": "Nie udało się załadować przepisu"
+    },
+    "alerts": {
+      "login_to_save": "Musisz być zalogowany, aby zapisać notatki.",
+      "notes_saved": "Notatki zapisane pomyślnie!",
+      "notes_failed": "Nie udało się zapisać notatek."
+    },
+    "recipe": {
+      "prep_time": "Czas przygotowania",
+      "total_time": "Całkowity czas",
+      "servings": "Porcje",
+      "tools": "Narzędzia",
+      "ingredients": "Składniki",
+      "instructions": "Instrukcje",
+      "details_prompt": "Naciśnij poniżej, aby zobaczyć szczegóły",
+      "start_cooking": "Zacznij gotować",
+      "notes": "Twoje notatki",
+      "notes_placeholder": "Dodaj swoje notatki tutaj ...",
+      "save_notes": "Zapisz notatki",
+      "created_on": "Utworzono",
+      "updated_on": "Zaktualizowano",
+      "tags": "Tagi",
+      "no_tags": "Brak dostępnych tagów",
+      "comments": "Zobacz i zarządzaj komentarzami"
+    }
+  },
+  "rateRecipe": {
+    "login_message": "Zaloguj się, aby ocenić przepis.",
+    "success_message": "Ocena została zapisana!",
+    "failure_message": "Nie udało się zapisać oceny.",
+    "heading": "Oceń przepis",
+    "average_rating": "Średnia ocena: {{rating}} ⭐ ({{rating}}/5)",
+    "no_ratings": "Średnia ocena: Brak ocen."
+  },
+  "recipeStep": {
+    "loading": "Ładowanie kroku...",
+    "error": "Błąd ładowania kroków przepisu",
+    "step_header": "Krok {{current}} z {{total}}",
+    "temperature": "Temperatura: {{temp}} °C",
+    "time": "Czas: {{time}} min",
+    "start_timer": "Startuj Timer",
+    "pause_timer": "Pauza",
+    "resume_timer": "Wznów",
+    "reset_timer": "Resetuj Timer",
+    "previous": "Poprzedni",
+    "next": "Następny",
+    "finish": "Zakończ",
+    "end_popup_title": "Gratulacje!",
+    "end_popup_message": "Ukończyłeś przepis. Smacznego!",
+    "timer_popup_title": "Czas minął!",
+    "timer_popup_message": "Timer dla tego kroku zakończył się."
+  },
+  "recipePDF": {
+    "view": "Zobacz przepis w PDF",
+    "download": "Pobierz przepis w PDF",
+    "login_required": "Musisz się zalogować, aby wygenerować plik PDF.",
+    "fetch_error": "Nie udało się pobrać pliku PDF. Spróbuj ponownie.",
+    "id_missing": "Brakuje ID przepisu."
+  },
+  "favorite": {
+    "add": "Dodaj do ulubionych",
+    "remove": "Usuń z ulubionych",
+    "added": "Dodano do ulubionych.",
+    "removed": "Usunięto z ulubionych.",
+    "error": "Błąd",
+    "login_required": "Musisz się zalogować, aby dodać do ulubionych."
+  },
+  "dashboard": {
+    "statsTitle": "📊 Statystyki",
+    "totalRecipes": "📌 Łączna liczba przepisów",
+    "totalUsers": "👥 Łączna liczba użytkowników",
+    "loadingStats": "Ładowanie statystyk...",
+    "popularTitle": "🔥 Najpopularniejsze przepisy",
+    "highestRated": "⭐ Najwyżej oceniane",
+    "mostCommented": "💬 Najczęściej komentowane",
+    "mostFavorited": "❤️ Najczęściej dodawane do ulubionych",
+    "loadingPopular": "Ładowanie popularnych przepisów..."
+  },
+  "favorites": {
+    "loginRequired": "Musisz się zalogować, aby zobaczyć ulubione przepisy.",
+    "fetchError": "Nie udało się pobrać ulubionych przepisów.",
+    "title": "Twoje Ulubione Przepisy",
+    "viewButton": "Zobacz przepis",
+    "noRecipes": "Nie masz jeszcze ulubionych przepisów."
+  },
+  "notes": {
+    "title": "Twoje notatki",
+    "placeholder": "Dodaj swoje notatki tutaj...",
+    "saveButton": "Zapisz notatki",
+    "loginToFetch": "Użytkownik niezalogowany, nie można pobrać notatek.",
+    "loginToSave": "Musisz się zalogować, aby zapisać notatki.",
+    "fetchError": "Nie udało się załadować notatek.",
+    "saveSuccess": "Notatki zostały zaktualizowane.",
+    "saveError": "Błąd: {{error}}"
   }
 }

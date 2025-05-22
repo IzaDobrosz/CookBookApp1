@@ -1,3 +1,5 @@
+import '../i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +9,13 @@ const FavoriteRecipes = () => {
     const [favorites, setFavorites] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchFavorites = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                setError("You need to log in to view your favorites.");
+                setError(t("favorites.loginRequired"));
                 return;
             }
 
@@ -23,7 +26,7 @@ const FavoriteRecipes = () => {
                 console.log(response.data.results);
                 setFavorites(response.data.results);
             } catch (error) {
-                 setError("Failed to fetch favorite recipes.");
+                 setError(t("favorites.fetchError"));
             }
         };
         fetchFavorites();
@@ -35,7 +38,7 @@ const FavoriteRecipes = () => {
 
     return (
         <div>
-            <h1>Your Favorite Recipes</h1>
+            <h1>{t("favorites.title")}</h1>
 
             {favorites.length > 0 ? (
                 <ul>
@@ -43,7 +46,7 @@ const FavoriteRecipes = () => {
                         <li key={recipe.recipe_id}>
                             <h2>{recipe.recipe_name}</h2>
                             <button onClick={() => navigate(`/recipe/${recipe.recipe_id}/`)}>
-                                View Recipe
+                                {t("favorites.viewButton")}
                             </button>
                             {/*<FavoriteRecipeNotes*/}
                             {/*    recipeID={recipe.recipe_id}*/}
@@ -53,7 +56,7 @@ const FavoriteRecipes = () => {
                     ))}
                 </ul>
             ) : (
-                <p>You have no favorite recipes yet.</p>
+                <p>{t("favorites.noRecipes")}</p>
             )}
         </div>
     );

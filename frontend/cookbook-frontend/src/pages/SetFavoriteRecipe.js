@@ -60,18 +60,19 @@
 //
 // export default FavoriteButton;
 
-
+import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import axios from "axios";
 
 const FavoriteButton = ({ recipeId }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [message, setMessage] = useState("");
+    const { t } = useTranslation();
 
     const handleFavoriteToggle = async () => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setMessage("You need to login to add to favorites.")
+            setMessage(t("favorite.login_required"))
             return;
         }
 
@@ -81,13 +82,13 @@ const FavoriteButton = ({ recipeId }) => {
                     headers: { Authorization: `Token ${token}` },
                 });
                 setIsFavorite(false);
-                setMessage("Removed from favorites.");
+                setMessage(t("favorite.removed"));
             } else {
                 await axios.post( `/api/favorites/${recipeId}/`, {},
                 { headers: { Authorization: `Token ${token}` } }
                 );
                 setIsFavorite(true);
-                setMessage("Added to favorites.");
+                setMessage(t("favorite.added"));
             }
         } catch (error) {
             setMessage("Error: " + (error.response?.data?.message || error.message));
@@ -97,7 +98,7 @@ const FavoriteButton = ({ recipeId }) => {
     return (
         <div>
             <button onClick={handleFavoriteToggle}>
-                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                {isFavorite ? t("favorite.remove") : t("favorite.add")}
             </button>
             {message && <p>{message}</p>}
         </div>

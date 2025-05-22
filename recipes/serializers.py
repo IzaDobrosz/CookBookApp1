@@ -108,7 +108,7 @@ class CommentSerializer(serializers.ModelSerializer):
         # If not, translate using googletrans
         try:
             translator = Translator()
-            translation = translator.translate(comment.comment, dest=target_lang, src=comment.language)
+            translation = translator.translate(obj.comment, dest=target_lang, src=obj.language)
             translated = translation.text
 
             # Cache it in the model
