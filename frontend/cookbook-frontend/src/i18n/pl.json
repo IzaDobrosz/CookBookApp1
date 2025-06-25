@@ -142,5 +142,59 @@
     "fetchError": "Nie udało się załadować notatek.",
     "saveSuccess": "Notatki zostały zaktualizowane.",
     "saveError": "Błąd: {{error}}"
+  },
+  "searchRecipes" : {
+    "title": "Wyszukaj przepisy",
+    "name": "Nazwa przepisu",
+    "selectTypeOfDish": "Wybierz typ dania",
+    "type": {
+      "APPETIZERS": "Przystawki",
+      "SOUPS": "Zupy",
+      "SALADS": "Sałatki",
+      "MAIN_DISHES": "Dania główne",
+      "DESSERTS": "Desery",
+      "SNACKS": "Przekąski",
+      "DRINKS": "Napoje",
+      "BREAD": "Pieczywo"
+    },
+    "preparationMethod": "Metoda przygotowania",
+    "method": {
+      "FRYING": "Smażenie",
+      "BOILING": "Gotowanie",
+      "GRILLING": "Grillowanie",
+      "BAKING": "Pieczenie",
+      "STEAMING": "Gotowanie na parze",
+      "SOUS-VIDE": "Sous-vide",
+      "RAW": "Na surowo"
+    },
+    "difficultyLevel": "Poziom trudności",
+    "difficulty": {
+      "EASY": "Łatwy",
+      "INTERMEDIATE": "Średni",
+      "DIFFICULT": "Trudny"
+    },
+    "ingredientType": "Typ składników",
+    "ingredients": {
+      "VEGETABLE_BASED": "Na bazie warzyw",
+      "MEAT_BASED": "Na bazie mięsa",
+      "FISH_BASED": "Na bazie ryb",
+      "FRUIT_BASED": "Na bazie owoców",
+      "SEAFOOD": "Owoce morza",
+      "DAIRY_BASED": "Na bazie nabiału",
+      "PASTA_RICE_BASED": "Na bazie makaronu/ryżu"
+    },
+    "preparationTime": "Czas przygotowania",
+    "time": {
+      "QUICK": "Szybki",
+      "MEDIUM": "Średni",
+      "TIME_CONSUMING": "Czasochłonny"
+    },
+    "favorites": "Pokaż tylko ulubione",
+    "tags": "Tagi (oddzielone przecinkami):",
+    "search": "Szukaj",
+    "clear": "Wyczyść filtry",
+    "noResults": "Nie znaleziono przepisów.",
+    "typeLabel": "Typ",
+    "difficultyLabel": "Trudność"
   }
 }
