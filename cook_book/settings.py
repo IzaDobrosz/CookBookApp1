@@ -112,6 +112,8 @@ LANGUAGES = [
     ('pl', 'Polish'),
 ]
 
+PARLER_DEFAULT_LANGUAGE_CODE = 'en'
+
 # Config for admin tabs
 PARLER_LANGUAGES = {
     None: (

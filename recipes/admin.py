@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model    # to return non standard user 
 from rest_framework.authtoken.models import Token
 from .forms import RecipeStepForm
 from .models import Tag, Recipe, Comment, RecipeStep
-from parler.admin import TranslatableAdmin, TranslatableTabularInline
+from parler.admin import TranslatableAdmin, TranslatableStackedInline
 
 
 
@@ -51,7 +51,7 @@ class CommentAdmin(admin.ModelAdmin):
 # class RecipeAdmin(admin.ModelAdmin):
 #     inlines = [RecipeStepInline]
 
-class RecipeStepInline(TranslatableTabularInline):
+class RecipeStepInline(TranslatableStackedInline):
     model = RecipeStep
     form = RecipeStepForm
     extra = 1    # Number of empty forms shown by default

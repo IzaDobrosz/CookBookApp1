@@ -106,23 +106,26 @@ class Recipe(TranslatableModel):
         """Update recipe statistics"""
         self.views += 1
 
-        if hasattr(self, 'ratings'):
+        elf.ratings_count = self.ratings.count() if hasattr(self, 'ratings') else 0
+        self.favorite_count = self.favorited_by.count() if hasattr(self, 'favorited_by') else 0
 
-            self.ratings_count = self.ratings.count()
-
-        else:
-            self.ratings_count = 0
-
-
-        if hasattr(self, 'favorited_by'):
-            self.favorite_count = self.favorited_by.count()
-        else:
-            self.favorite_count = 0
-
-        if hasattr(self, 'favorited_by'):
-            self.favorite_count = self.favorited_by.count()
-        else:
-            self.favorite_count = 0
+        # if hasattr(self, 'ratings'):
+        #
+        #     self.ratings_count = self.ratings.count()
+        #
+        # else:
+        #     self.ratings_count = 0
+        #
+        #
+        # if hasattr(self, 'favorited_by'):
+        #     self.favorite_count = self.favorited_by.count()
+        # else:
+        #     self.favorite_count = 0
+        #
+        # if hasattr(self, 'favorited_by'):
+        #     self.favorite_count = self.favorited_by.count()
+        # else:
+        #     self.favorite_count = 0
 
         self.save()
 #
@@ -176,7 +179,7 @@ class RecipeStep(TranslatableModel):
     time = models.DurationField(null=True, blank=True, verbose_name="Time")    # time as timedelta
 
     translations = TranslatedFields(
-        instruction=models.TextField(verbose_name="Instruction", default="No instruction provided")
+        instruction=models.TextField(verbose_name="Instruction", default="")
     )
     class Meta:
         ordering = ['step_number']
@@ -196,14 +199,14 @@ class Comment(models.Model):
         max_length=10,
         default='en',
         verbose_name=_("Original Language"),
-        help_text=_("Language code of the original comment (e.g. 'en', 'pl', 'sv').")
+        help_text=_("Language code of the original comment.")
     )
 
     translated_comment = models.JSONField(
         blank=True,
         null=True,
         verbose_name=_("Translated Comment"),
-        help_text=_("Dictionary with translated versions of the comment. Example: {'en': '...', 'de': '...'}")
+        help_text=_("Dictionary with translated versions of the comment.")
     )
 
     def __str__(self):

@@ -1,86 +1,4 @@
-// // import React, { useState } from "react";
-// // import axios from "axios";
-// // import "./SearchRecipes.css";
-// //
-// // const SearchRecipes = () => {
-// //   const [recipes, setRecipes] = useState([]);
-// //   const [filters, setFilters] = useState({
-// //     name: "",
-// //     type_of_dish: "",
-// //     preparation_method: "",
-// //     difficulty_level: "",
-// //     ingredient_type: "",
-// //   });
-// //
-// //   const handleChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setFilters({ ...filters, [name]: value });
-// //   };
-// //
-// //   const handleSearch = async () => {
-// //     try {
-// //       const response = await axios.get("http://127.0.0.1:8000/api/recipes/search/", {
-// //         params: filters,
-// //       });
-// //       setRecipes(response.data);
-// //     } catch (error) {
-// //       console.error("Error fetching recipes:", error);
-// //     }
-// //   };
-// //
-// //   return (
-// //     <div className="search-container">
-// //       <h2>Search Recipes</h2>
-// //       <div className="filters">
-// //         <input
-// //           type="text"
-// //           name="name"
-// //           placeholder="Recipe Name"
-// //           value={filters.name}
-// //           onChange={handleChange}
-// //         />
-// //         <select name="type_of_dish" onChange={handleChange}>
-// //           <option value="">Select Type of Dish</option>
-// //           <option value="APPETIZERS">Appetizers</option>
-// //           <option value="SOUPS">Soups</option>
-// //           <option value="SALADS">Salads</option>
-// //           {/* Dodaj pozostałe opcje */}
-// //         </select>
-// //         <select name="preparation_method" onChange={handleChange}>
-// //           <option value="">Preparation Method</option>
-// //           <option value="FRYING">Frying</option>
-// //           <option value="BOILING">Boiling</option>
-// //           {/* Dodaj pozostałe opcje */}
-// //         </select>
-// //         <select name="difficulty_level" onChange={handleChange}>
-// //           <option value="">Difficulty Level</option>
-// //           <option value="EASY">Easy</option>
-// //           <option value="INTERMEDIATE">Intermediate</option>
-// //           <option value="DIFFICULT">Difficult</option>
-// //         </select>
-// //         <button onClick={handleSearch}>Search</button>
-// //       </div>
-// //       <div className="results">
-// //         {recipes.length > 0 ? (
-// //           recipes.map((recipe) => (
-// //             <div key={recipe.id} className="recipe-card">
-// //               <h3>{recipe.name}</h3>
-// //               <p>{recipe.description}</p>
-// //               <p><strong>Type:</strong> {recipe.type_of_dish}</p>
-// //               <p><strong>Difficulty:</strong> {recipe.difficulty_level}</p>
-// //             </div>
-// //           ))
-// //         ) : (
-// //           <p>No recipes found.</p>
-// //         )}
-// //       </div>
-// //     </div>
-// //   );
-// // };
-// //
-// // export default SearchRecipes;
-//
-
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -102,6 +20,7 @@ const SearchRecipes = () => {
     favorites: searchParams.get("favorites") === "true" ? "true" : "",
   });
   const [tags, setTags] = useState(filters.tags || "");
+  const { t } = useTranslation();
 
   // Obsługa zmiany filtrów
   const handleChange = (e) => {
@@ -182,61 +101,61 @@ const SearchRecipes = () => {
 
   return (
     <div className="search-container">
-      <h2>Search Recipes</h2>
+      <h2>{t("searchRecipes.title")}</h2>
 
       {/* 🔍 Panel filtrów */}
       <div className="filters">
         <input
             type="text"
             name="name"
-            placeholder="Recipe Name"
+            placeholder={t("searchRecipes.name")}
             value={filters.name}
             onChange={handleChange}
         />
         <select name="type_of_dish" value={filters.type_of_dish} onChange={handleChange}>
-          <option value="">Select Type of Dish</option>
-          <option value="APPETIZERS">Appetizers</option>
-          <option value="SOUPS">Soups</option>
-          <option value="SALADS">Salads</option>
-          <option value="MAIN_DISHES">Main Dishes</option>
-          <option value="DESSERTS">Desserts</option>
-          <option value="SNACKS">Snacks</option>
-          <option value="DRINKS">Drinks</option>
-          <option value="BREAD">Bread</option>
+          <option value="">{t("searchRecipes.selectTypeOfDish")}</option>
+          <option value="APPETIZERS">{t("searchRecipes.type.APPETIZERS")}</option>
+          <option value="SOUPS">{t("searchRecipes.type.SOUPS")}</option>
+          <option value="SALADS">{t("searchRecipes.type.SALADS")}</option>
+          <option value="MAIN_DISHES">{t("searchRecipes.type.MAIN_DISHES")}</option>
+          <option value="DESSERTS">{t("searchRecipes.type.DESSERTS")}</option>
+          <option value="SNACKS">{t("searchRecipes.type.SNACKS")}</option>
+          <option value="DRINKS">{t("searchRecipes.type.DRINKS")}</option>
+          <option value="BREAD">{t("searchRecipes.type.BREAD")}</option>
         </select>
         <select name="preparation_method" value={filters.preparation_method} onChange={handleChange}>
-          <option value="">Preparation Method</option>
-          <option value="FRYING">Frying</option>
-          <option value="BOILING">Boiling</option>
-          <option value="GRILLING">Grilling</option>
-          <option value="BAKING">Baking</option>
-          <option value="STEAMING">Steaming</option>
-          <option value="SOUS-VIDE">Sous-vide</option>
-          <option value="RAW">Raw</option>
+          <option value="">{t("searchRecipes.preparationMethod")}</option>
+          <option value="FRYING">{t("searchRecipes.method.FRYING")}</option>
+          <option value="BOILING">{t("searchRecipes.method.BOILING")}</option>
+          <option value="GRILLING">{t("searchRecipes.method.GRILLING")}</option>
+          <option value="BAKING">{t("searchRecipes.method.BAKING")}</option>
+          <option value="STEAMING">{t("searchRecipes.method.STEAMING")}</option>
+          <option value="SOUS-VIDE">{t("searchRecipes.method.SOUS-VIDE")}</option>
+          <option value="RAW">{t("searchRecipes.method.RAW")}</option>
         </select>
         <select name="difficulty_level" value={filters.difficulty_level} onChange={handleChange}>
-          <option value="">Difficulty Level</option>
-          <option value="EASY">Easy</option>
-          <option value="INTERMEDIATE">Intermediate</option>
-          <option value="DIFFICULT">Difficult</option>
+          <option value="">{t("searchRecipes.difficultyLevel")}</option>
+          <option value="EASY">{t("searchRecipes.difficulty.EASY")}</option>
+          <option value="INTERMEDIATE">{t("searchRecipes.difficulty.INTERMEDIATE")}</option>
+          <option value="DIFFICULT">{t("searchRecipes.difficulty.DIFFICULT")}</option>
         </select>
 
         <select name="ingredient_type" value={filters.ingredient_type} onChange={handleChange}>
-          <option value="">Ingredient Type</option>
-          <option value="VEGETABLE_BASED">Vegetable-Based</option>
-          <option value="MEAT_BASED">Meat-Based</option>
-          <option value="FISH_BASED">Fish-Based</option>
-          <option value="FRUIT_BASED">Fruit-Based</option>
-          <option value="SEAFOOD">Seafood</option>
-          <option value="DAIRY_BASED">Dairy-Based</option>
-          <option value="PASTA_RICE_BASED">Pasta/Rice-Based</option>
+          <option value="">{t("searchRecipes.ingredientType")}</option>
+          <option value="VEGETABLE_BASED">{t("searchRecipes.ingredients.VEGETABLE_BASED")}</option>
+          <option value="MEAT_BASED">{t("searchRecipes.ingredients.MEAT_BASED")}</option>
+          <option value="FISH_BASED">{t("searchRecipes.ingredients.FISH_BASED")}</option>
+          <option value="FRUIT_BASED">{t("searchRecipes.ingredients.FRUIT_BASED")}</option>
+          <option value="SEAFOOD">{t("searchRecipes.ingredients.SEAFOOD")}</option>
+          <option value="DAIRY_BASED">{t("searchRecipes.ingredients.DAIRY_BASED")}</option>
+          <option value="PASTA_RICE_BASED">{t("searchRecipes.ingredients.PASTA_RICE_BASED")}</option>
         </select>
 
         <select name="preparation_time" value={filters.preparation_time} onChange={handleChange}>
-          <option value="">Preparation Time</option>
-          <option value="QUICK">Quick</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="TIME_CONSUMING">Time-Consuming</option>
+          <option value="">{t("searchRecipes.preparationTime")}</option>
+          <option value="QUICK">{t("searchRecipes.time.QUICK")}</option>
+          <option value="MEDIUM">{t("searchRecipes.time.MEDIUM")}</option>
+          <option value="TIME_CONSUMING">{t("searchRecipes.time.TIME_CONSUMING")}</option>
         </select>
 
         <label>
@@ -246,11 +165,11 @@ const SearchRecipes = () => {
               checked={filters.favorites}
               onChange={handleChange}
           />
-          Show only favorites
+          {t("searchRecipes.favorites")}
         </label>
 
         <label>
-          Tags (comma-separated):
+          {t("searchRecipes.tags")}
           <input
               type="text"
               name="tags"
@@ -260,8 +179,8 @@ const SearchRecipes = () => {
           />
         </label>
 
-        <button onClick={handleSearch}>Search</button>
-        <button onClick={handleClearFilters} className="clear-btn">Clear Filters</button>
+        <button onClick={handleSearch}>{t("searchRecipes.search")}</button>
+        <button onClick={handleClearFilters} className="clear-btn">{t("searchRecipes.clear")}</button>
         {/* Clear filters btn */}
       </div>
 
@@ -272,12 +191,12 @@ const SearchRecipes = () => {
                 <div key={recipe.id} className="recipe-card">
                   <h3>{recipe.name}</h3>
                   <p>{recipe.description}</p>
-                  <p><strong>Type:</strong> {recipe.type_of_dish}</p>
-                  <p><strong>Difficulty:</strong> {recipe.difficulty_level}</p>
+                  <p><strong>{t("searchRecipes.typeLabel")}:</strong> {recipe.type_of_dish}</p>
+                  <p><strong>{t("searchRecipes.difficultyLabel")}:</strong> {recipe.difficulty_level}</p>
                 </div>
             ))
         ) : (
-            <p>No recipes found.</p>
+            <p>{t("searchRecipes.noResults")}</p>
         )}
       </div>
     </div>

@@ -1,7 +1,8 @@
 from django import forms
+from parler.forms import TranslatableModelForm
 from .models import RecipeStep
 
-class RecipeStepForm(forms.ModelForm):
+class RecipeStepForm(TranslatableModelForm):
     step_number = forms.IntegerField(min_value=1, max_value=50, label='Step Number')
     instruction = forms.CharField(widget=forms.Textarea, label='Instruction')
     temperature = forms.IntegerField(min_value=1, max_value=300, required=False, label='Temperature')

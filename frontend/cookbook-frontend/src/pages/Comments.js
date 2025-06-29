@@ -187,7 +187,7 @@ const Comments = () => {
                                                 </button>
                                                 {showTranslated[comment.id] && (
                                                     <p className="translated-comment">
-                                                        🈯 {translatedComments[comment.id]}
+                                                        🈯 {translatedComments[comment.id] || 'Loading translation...'}
                                                     </p>
                                                 )}
                                             </>
