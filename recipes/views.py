@@ -524,6 +524,7 @@ class GenerateRecipePDFView(APIView):
         try:
             # Get recipe from database
             recipe = Recipe.objects.get(id=recipe_id)
+            recipe.set_current_language("sv")
         except Recipe.DoesNotExist:
             return HttpResponse("Recipe not found", status=404)
 
@@ -541,21 +542,21 @@ class GenerateRecipePDFView(APIView):
         elements = []
 
         # Add recipe details (title, description, ingredients, steps)
-        elements.append(Paragraph(f"<b>Recipe Name:</b> {recipe.name}", styles['Title']))
+        elements.append(Paragraph(f"<b>{_('Recipe Name')}:</b> {recipe.name}", styles['Title']))
         elements.append(Spacer(1, 12))
 
         # Add description
         if recipe.description:
-            elements.append(Paragraph("<b>Description:</b>", styles['Heading2']))
+            elements.append(Paragraph("<b>"+_('Description')+"</b>", styles['Heading2']))
             elements.append(Paragraph(recipe.description, styles['BodyText']))
             elements.append(Spacer(1, 12))
 
         # Add ingredients
         if recipe.ingredients:
-            elements.append(Paragraph("<b>Ingredients:</b>", styles['Heading2']))
+            elements.append(Paragraph(f"<b>{_('Ingredients')}:</b>", styles['Heading2']))
             ingredients = recipe.ingredients.split(',')
             ingredients_list = [[idx + 1, ingredient.strip()] for idx, ingredient in enumerate(ingredients)]
-            table = Table([['Nr', 'Ingredients']] + ingredients_list, colWidths=[30, 450])
+            table = Table([[ _('Nr'), _('Ingredients') ]] + ingredients_list, colWidths=[30, 450])
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.lightblue),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
@@ -569,16 +570,17 @@ class GenerateRecipePDFView(APIView):
             elements.append(Spacer(1, 12))
 
         # Add recipe steps
-        steps = recipe.steps.all()  # Fetch related RecipeStep objects
+        steps = recipe.steps.all().language("sv")  # Fetch related RecipeStep objects
+
         if steps.exists():
-            elements.append(Paragraph("<b>Steps:</b>", styles['Heading2']))
+            elements.append(Paragraph(f"<b>{_('Steps')}:</b>", styles['Heading2']))
             for step in steps:
                 step_details = f"{step.step_number}. {step.instruction}"
                 if step.temperature:
-                    step_details += f" (Temperature: {step.temperature}°C)"
+                    step_details += f" ({_('Temperature')}: {step.temperature}°C)"
                 if step.time:
                     time_in_minutes = step.time.total_seconds() // 60
-                    step_details += f" (Time: {int(time_in_minutes)} min)"
+                    step_details += f" ({_('Time')}: {int(time_in_minutes)} min)"
                 elements.append(Paragraph(step_details, styles['BodyText']))
                 elements.append(Spacer(1, 6))
 
