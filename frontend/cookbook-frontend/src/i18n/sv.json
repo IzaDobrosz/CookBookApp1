@@ -98,7 +98,8 @@
     "end_popup_title": "Grattis!",
     "end_popup_message": "Du har slutfört receptet. Smaklig måltid!",
     "timer_popup_title": "Tiden är slut!",
-    "timer_popup_message": "Tiden för detta steg är slut."
+    "timer_popup_message": "Tiden för detta steg är slut.",
+    "instruction_missing": "Ingen instruktion tillgänglig för det valda språket."
   },
   "recipePDF": {
     "view": "Visa recept i PDF",
@@ -142,5 +143,59 @@
     "fetchError": "Det gick inte att ladda anteckningar.",
     "saveSuccess": "Anteckningarna har uppdaterats.",
     "saveError": "Fel: {{error}}"
+  },
+  "searchRecipes" : {
+    "title": "Sök recept",
+    "name": "Receptnamn",
+    "selectTypeOfDish": "Välj typ av rätt",
+    "type": {
+      "APPETIZERS": "Förrätter",
+      "SOUPS": "Soppor",
+      "SALADS": "Sallader",
+      "MAIN_DISHES": "Huvudrätter",
+      "DESSERTS": "Efterrätter",
+      "SNACKS": "Snacks",
+      "DRINKS": "Drycker",
+      "BREAD": "Bröd"
+    },
+    "preparationMethod": "Tillagningsmetod",
+    "method": {
+      "FRYING": "Stekning",
+      "BOILING": "Kokning",
+      "GRILLING": "Grillning",
+      "BAKING": "Bakning",
+      "STEAMING": "Ångkokning",
+      "SOUS-VIDE": "Sous-vide",
+      "RAW": "Rå"
+    },
+    "difficultyLevel": "Svårighetsgrad",
+    "difficulty": {
+      "EASY": "Lätt",
+      "INTERMEDIATE": "Medel",
+      "DIFFICULT": "Svår"
+    },
+    "ingredientType": "Ingredienstyp",
+    "ingredients": {
+      "VEGETABLE_BASED": "Grönsaksbaserad",
+      "MEAT_BASED": "Köttbaserad",
+      "FISH_BASED": "Fiskbaserad",
+      "FRUIT_BASED": "Fruktbaserad",
+      "SEAFOOD": "Skaldjur",
+      "DAIRY_BASED": "Mejeribaserad",
+      "PASTA_RICE_BASED": "Pasta-/risbaserad"
+    },
+    "preparationTime": "Tillagningstid",
+    "time": {
+      "QUICK": "Snabb",
+      "MEDIUM": "Medel",
+      "TIME_CONSUMING": "Tidskrävande"
+    },
+    "favorites": "Visa endast favoriter",
+    "tags": "Taggar (kommaseparerade):",
+    "search": "Sök",
+    "clear": "Rensa filter",
+    "noResults": "Inga recept hittades.",
+    "typeLabel": "Typ",
+    "difficultyLabel": "Svårighet"
   }
 }

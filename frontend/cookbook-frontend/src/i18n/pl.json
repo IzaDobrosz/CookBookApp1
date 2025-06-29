@@ -98,7 +98,8 @@
     "end_popup_title": "Gratulacje!",
     "end_popup_message": "Ukończyłeś przepis. Smacznego!",
     "timer_popup_title": "Czas minął!",
-    "timer_popup_message": "Timer dla tego kroku zakończył się."
+    "timer_popup_message": "Timer dla tego kroku zakończył się.",
+    "instruction_missing": "Brak instrukcji dla wybranego języka."
   },
   "recipePDF": {
     "view": "Zobacz przepis w PDF",

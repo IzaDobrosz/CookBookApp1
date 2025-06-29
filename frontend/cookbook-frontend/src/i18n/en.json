@@ -98,7 +98,8 @@
     "end_popup_title": "Congratulations!",
     "end_popup_message": "You've completed the recipe. Enjoy your meal!",
     "timer_popup_title": "Time's up!",
-    "timer_popup_message": "The timer for this step has finished."
+    "timer_popup_message": "The timer for this step has finished.",
+    "instruction_missing": "Instruction not available in this language."
   },
   "recipePDF": {
     "view": "View Recipe PDF",
@@ -142,5 +143,59 @@
     "fetchError": "Failed to load notes.",
     "saveSuccess": "Notes updated successfully.",
     "saveError": "Error: {{error}}"
-  }
+  },
+  "searchRecipes" : {
+    "title": "Search Recipes",
+    "name": "Recipe Name",
+    "selectTypeOfDish": "Select Type of Dish",
+    "type": {
+      "APPETIZERS": "Appetizers",
+      "SOUPS": "Soups",
+      "SALADS": "Salads",
+      "MAIN_DISHES": "Main Dishes",
+      "DESSERTS": "Desserts",
+      "SNACKS": "Snacks",
+      "DRINKS": "Drinks",
+      "BREAD": "Bread"
+    },
+    "preparationMethod": "Preparation Method",
+    "method": {
+      "FRYING": "Frying",
+      "BOILING": "Boiling",
+      "GRILLING": "Grilling",
+      "BAKING": "Baking",
+      "STEAMING": "Steaming",
+      "SOUS-VIDE": "Sous-vide",
+      "RAW": "Raw"
+    },
+    "difficultyLevel": "Difficulty Level",
+    "difficulty": {
+      "EASY": "Easy",
+      "INTERMEDIATE": "Intermediate",
+      "DIFFICULT": "Difficult"
+    },
+    "ingredientType": "Ingredient Type",
+    "ingredients": {
+      "VEGETABLE_BASED": "Vegetable-Based",
+      "MEAT_BASED": "Meat-Based",
+      "FISH_BASED": "Fish-Based",
+      "FRUIT_BASED": "Fruit-Based",
+      "SEAFOOD": "Seafood",
+      "DAIRY_BASED": "Dairy-Based",
+      "PASTA_RICE_BASED": "Pasta/Rice-Based"
+    },
+    "preparationTime": "Preparation Time",
+    "time": {
+      "QUICK": "Quick",
+      "MEDIUM": "Medium",
+      "TIME_CONSUMING": "Time-Consuming"
+    },
+    "favorites": "Show only favorites",
+    "tags": "Tags (comma-separated):",
+    "search": "Search",
+    "clear": "Clear Filters",
+    "noResults": "No recipes found.",
+    "typeLabel": "Type",
+    "difficultyLabel": "Difficulty"
+    }
 }
