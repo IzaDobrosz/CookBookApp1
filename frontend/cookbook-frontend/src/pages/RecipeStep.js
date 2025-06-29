@@ -143,7 +143,9 @@ const RecipeStep = () => {
                 <div className="progress-bar" style={{ width: `${stepProgress}%` }}></div>
             </div>
 
-            <p>{currentStep.instruction}</p>
+            <p>{currentStep.translations[i18n.language]?.instruction ||
+                currentStep.translations.en?.instruction ||
+                t("recipeStep.instruction_missing")}</p>
             <div className="temperature-time-container">
                 {currentStep.temperature && (
                     <p className="temperature">
