@@ -518,13 +518,14 @@ class GenerateRecipePDFView(APIView):
     """View to create PDF for single recipe"""
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request, recipe_id):
         logger.debug(f"Request for pdf: recipe_id={recipe_id}")
         try:
             # Get recipe from database
             recipe = Recipe.objects.get(id=recipe_id)
-            recipe.set_current_language("sv")
+            # Set language dynamically from Accept-Language header or fallback to default
+            language = request.LANGUAGE_CODE or 'en'
+            recipe.set_current_language(language)
         except Recipe.DoesNotExist:
             return HttpResponse("Recipe not found", status=404)
 
@@ -532,9 +533,10 @@ class GenerateRecipePDFView(APIView):
         download = request.GET.get('download', 'false').lower() == 'true'
         disposition = 'attachment' if download else 'inline'
 
+        save_filename = f"{recipe.name.replace(' ', '_')}.pdf"
         # Create HTTP response with appropriate Content-Disposition
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'{disposition}; filename="{recipe.name}.pdf"'
+        response['Content-Disposition'] = f'{disposition}; filename="{save_filename}.pdf"'
 
         # Generate PDF content
         doc = SimpleDocTemplate(response, pagesize=letter)
@@ -570,7 +572,7 @@ class GenerateRecipePDFView(APIView):
             elements.append(Spacer(1, 12))
 
         # Add recipe steps
-        steps = recipe.steps.all().language("sv")  # Fetch related RecipeStep objects
+        steps = recipe.steps.all().language(language)  # Fetch related RecipeStep objects
 
         if steps.exists():
             elements.append(Paragraph(f"<b>{_('Steps')}:</b>", styles['Heading2']))
