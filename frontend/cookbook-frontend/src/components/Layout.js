@@ -29,14 +29,14 @@ const Layout = ({ children }) => {
     // };
 
     return (
-        <div className="layout">
+        <div className="layout-container">
             {/* Upper navigation bar */}
-            <header className="header">
-                <div className="logo">
-                    <img src="/images/logo_cookbook1.png" alt="CookBook Logo" className="logo-img"/>
-                    {/*<Link to="/landing-page/">CookBook</Link>*/}
+            <header className="layout-header">
+                <div className="layout-logo">
+                    <img src="/images/logo_cookbook1.png" alt="CookBook Logo" className="logo-img" />
+
                 </div>
-                <nav className="nav">
+                <nav className="layout-nav">
                     <Link to="/landing_page/">{t("layout.nav.home")}</Link>
                     <Link to="/recipes/">{t("layout.nav.recipes")}</Link>
                     <Link to="/favorites/">{t("layout.nav.favorites")}</Link>
@@ -79,7 +79,7 @@ const Layout = ({ children }) => {
                     <Link to="/contact">{t("layout.footer.contact")}</Link>
                     <Link to="/privacy">{t("layout.footer.privacy")}</Link>
                 </div>
-                <p>© 2024 {t("layout.footer.copyright")}</p>
+                <p>© 2025 {t("layout.footer.copyright")}</p>
             </footer>
         </div>
     );
